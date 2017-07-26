@@ -8,6 +8,8 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
+import static com.mkemp.nibbles.Nibbles.PPM;
+
 /**
  * Created by mkemp on 7/25/17.
  */
@@ -29,13 +31,13 @@ public class Head extends Snake {
 
     private void defineHead() {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(0, 0);
+        bodyDef.position.set(32 / PPM, 32 / PPM);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bodyDef);
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(6);
+        circleShape.setRadius(6 / PPM);
 
         fixtureDef.shape = circleShape;
         body.createFixture(fixtureDef);

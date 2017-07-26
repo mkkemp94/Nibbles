@@ -1,22 +1,29 @@
 package com.mkemp.nibbles.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mkemp.nibbles.Nibbles;
 import com.mkemp.nibbles.sprites.Head;
 import com.mkemp.nibbles.tools.B2WorldCreator;
-import com.mkemp.nibbles.tools.WorldContactListener;
 
 import static com.mkemp.nibbles.Nibbles.PPM;
 import static com.mkemp.nibbles.Nibbles.WORLD_HEIGHT;
@@ -65,13 +72,29 @@ public class PlayScreen implements Screen {
 
         // Construct a world
         world = new World(new Vector2(0, 0), false);
-        world.setContactListener(new WorldContactListener());
+        //world.setContactListener(new WorldContactListener());
 
-//        debugRenderer = new Box2DDebugRenderer();
+        debugRenderer = new Box2DDebugRenderer();
 //        worldCreator = new B2WorldCreator(this);
 
         player = new Head(world, new Texture("yoshi.png"), 32f, 32f);
 
+        BodyDef bodyDef = new BodyDef();
+        PolygonShape shape = new PolygonShape();
+        FixtureDef fixtureDef = new FixtureDef();
+        Body body;
+
+        for (MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+            bodyDef.type = BodyDef.BodyType.StaticBody;
+            bodyDef.position.set(rectangle.getX() + rectangle.getWidth() / 2,
+                    rectangle.getY() + rectangle.getHeight() / 2);
+            body = world.createBody(bodyDef);
+
+            shape.setAsBox((rectangle.getWidth() / 2) / PPM, (rectangle.getHeight() / 2) / PPM);
+            fixtureDef.shape = shape;
+            body.createFixture(fixtureDef);
+        }
     }
 
     @Override
@@ -90,19 +113,11 @@ public class PlayScreen implements Screen {
         // --- Render what the camera can see only.
         //game.batch.setProjectionMatrix(gameCam.combined);
 
+        debugRenderer.render(world, gameCam.combined);
         game.batch.begin();
         //game.batch.draw(background, 0, 0);
         player.draw(game.batch);
         game.batch.end();
-    }
-
-    /**
-     * Handles input by the user.
-     */
-    private void handleInput() {
-        //if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
-            //player.
-
     }
 
     /**
@@ -115,6 +130,25 @@ public class PlayScreen implements Screen {
 
         gameCam.update();
         tiledMapRenderer.setView(gameCam);
+    }
+
+    /**
+     * Handles input by the user.
+     */
+    private void handleInput() {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) &&
+                player.body.getLinearVelocity().y <= 0.1)
+            player.body.applyLinearImpulse(new Vector2(0, 1f), player.body.getWorldCenter(), true);
+        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) &&
+        player.body.getLinearVelocity().y >= -0.1)
+            player.body.applyLinearImpulse(new Vector2(0, -1f), player.body.getWorldCenter(), true);
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) &&
+        player.body.getLinearVelocity().x >= -2)
+            player.body.applyLinearImpulse(new Vector2(-0.4f, 0), player.body.getWorldCenter(), true);
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) &&
+                player.body.getLinearVelocity().x <= 2)
+            player.body.applyLinearImpulse(new Vector2(0.4f, 0), player.body.getWorldCenter(), true);
+
     }
 
     @Override
