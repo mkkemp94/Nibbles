@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public abstract class Snake extends Sprite {
 
-
+    /** Constructor takes in a texture to be passed to super */
     public Snake(Texture texture, float x, float y) {
         super(texture);
         setPosition(x, y);
