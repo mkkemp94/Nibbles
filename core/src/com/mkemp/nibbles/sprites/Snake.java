@@ -22,6 +22,7 @@ public class Snake extends Sprite {
     public Body body;
     public PlayScreen screen;
     private float moveTimer;
+    private int direction;
 
     public Snake(World world, PlayScreen screen, Texture texture) {
         super(texture);
@@ -40,9 +41,34 @@ public class Snake extends Sprite {
      */
     public void update(float dt) {
 
+        float currentx = body.getPosition().x;
+        float currenty = body.getPosition().y;
+        float currentAngle = body.getPosition().angle();
 
+        moveTimer += dt;
+        if (moveTimer >= 0.5) {
+            switch (direction) {
+                case 0:
+                    body.setTransform(currentx + 16 / PPM, currenty, 0);
+                    break;
+                case 90:
+                    body.setTransform(currentx, currenty + 16 / PPM, 0);
+                    break;
+                case 180:
+                    body.setTransform(currentx - 16 / PPM, currenty, 0);
+                    break;
+                case 270:
+                    body.setTransform(currentx, currenty - 16 / PPM, 0);
+                    break;
+            }
+            moveTimer = 0;
+        }
 
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+    }
+
+    public void setDirection(int degrees) {
+        direction = degrees;
     }
 
     /**

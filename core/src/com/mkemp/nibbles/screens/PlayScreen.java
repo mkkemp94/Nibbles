@@ -131,13 +131,17 @@ public class PlayScreen implements Screen {
         float currenty = player.body.getPosition().y;
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            player.body.setTransform(currentx, currenty + 16 / PPM, 90);
+            //player.body.setTransform(currentx, currenty + 16 / PPM, 90);
+            player.setDirection(90);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-            player.body.setTransform(currentx, currenty - 16 / PPM, 270);
+            //player.body.setTransform(currentx, currenty - 16 / PPM, 270);
+            player.setDirection(270);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-            player.body.setTransform(currentx - 16 / PPM, currenty, 180);
+            //player.body.setTransform(currentx - 16 / PPM, currenty, 180);
+            player.setDirection(180);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-            player.body.setTransform(currentx + 16 / PPM, currenty, 0);
+            //player.body.setTransform(currentx + 16 / PPM, currenty, 0);
+            player.setDirection(0);
         }
 
     }
