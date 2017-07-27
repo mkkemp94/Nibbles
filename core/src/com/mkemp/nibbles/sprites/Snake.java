@@ -21,11 +21,14 @@ public class Snake extends Sprite {
     public World world;
     public Body body;
     public PlayScreen screen;
+    private float moveTimer;
 
     public Snake(World world, PlayScreen screen, Texture texture) {
         super(texture);
         this.world = world;
         this.screen = screen;
+
+        moveTimer = 0;
 
         defineHead();
         setBounds(0, 0, 16 / PPM, 16 / PPM);
@@ -35,7 +38,10 @@ public class Snake extends Sprite {
     /**
      * Attach sprite.
      */
-    public void update() {
+    public void update(float dt) {
+
+
+
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
     }
 
@@ -44,7 +50,7 @@ public class Snake extends Sprite {
      */
     private void defineHead() {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(32 / PPM, 32 / PPM);
+        bodyDef.position.set(24 / PPM, 24 / PPM);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bodyDef);
 

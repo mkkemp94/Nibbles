@@ -6,18 +6,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -51,7 +44,7 @@ public class PlayScreen implements Screen {
     private B2WorldCreator worldCreator;
 
     private Snake player;
-    private final Texture texture;
+    private final Texture yoshiTexture;
 
     public PlayScreen(Nibbles game) {
         this.game = game;
@@ -73,32 +66,15 @@ public class PlayScreen implements Screen {
         //world.setContactListener(new WorldContactListener());
 
         debugRenderer = new Box2DDebugRenderer();
-        //worldCreator = new B2WorldCreator(this);
+        worldCreator = new B2WorldCreator(this);
 
-        texture = new Texture("yoshi.png");
-        player = new Snake(world, this, texture); //, 72f / PPM, 32f / PPM);
-
-        BodyDef bodyDef = new BodyDef();
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fixtureDef = new FixtureDef();
-        Body body;
-
-        for (MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-            bodyDef.type = BodyDef.BodyType.StaticBody;
-            bodyDef.position.set(rectangle.getX() + rectangle.getWidth() / 2,
-                    rectangle.getY() + rectangle.getHeight() / 2);
-            body = world.createBody(bodyDef);
-
-            shape.setAsBox((rectangle.getWidth() / 2) / PPM, (rectangle.getHeight() / 2) / PPM);
-            fixtureDef.shape = shape;
-            body.createFixture(fixtureDef);
-        }
+        yoshiTexture = new Texture("yoshi.png");
+        player = new Snake(world, this, yoshiTexture); //, 72f / PPM, 32f / PPM);
     }
 
     @Override
     public void render(float delta) {
-        update();
+        update(delta);
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -121,14 +97,14 @@ public class PlayScreen implements Screen {
     /**
      * Handles all calculations so render can draw.
      */
-    private void update() {
+    private void update(float dt) {
         handleInput();
 
         // For world movement.
         world.step(1/60f, 6, 2);
 
         // Update position of sprite.
-        player.update();
+        player.update(dt);
 
         gameCam.update();
         tiledMapRenderer.setView(gameCam);
@@ -138,18 +114,40 @@ public class PlayScreen implements Screen {
      * Handles input by the user.
      */
     private void handleInput() {
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) &&
-                player.body.getLinearVelocity().y <= 0.1)
-            player.body.applyLinearImpulse(new Vector2(0, 1f), player.body.getWorldCenter(), true);
-        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) &&
-                player.body.getLinearVelocity().y >= -0.1)
-            player.body.applyLinearImpulse(new Vector2(0, -1f), player.body.getWorldCenter(), true);
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) &&
-                player.body.getLinearVelocity().x >= -2)
-            player.body.applyLinearImpulse(new Vector2(-0.4f, 0), player.body.getWorldCenter(), true);
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) &&
-                player.body.getLinearVelocity().x <= 2)
-            player.body.applyLinearImpulse(new Vector2(0.4f, 0), player.body.getWorldCenter(), true);
+//        if (Gdx.input.isKeyPressed(Input.Keys.UP) &&
+//                player.body.getLinearVelocity().y <= 0.1)
+//            player.body.applyLinearImpulse(new Vector2(0, 1f), player.body.getWorldCenter(), true);
+//        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) &&
+//                player.body.getLinearVelocity().y >= -0.1)
+//            player.body.applyLinearImpulse(new Vector2(0, -1f), player.body.getWorldCenter(), true);
+//        else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) &&
+//                player.body.getLinearVelocity().x >= -2)
+//            player.body.applyLinearImpulse(new Vector2(-0.4f, 0), player.body.getWorldCenter(), true);
+//        else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) &&
+//                player.body.getLinearVelocity().x <= 2)
+//            player.body.applyLinearImpulse(new Vector2(0.4f, 0), player.body.getWorldCenter(), true);
+
+        float currentx = player.body.getPosition().x;
+        float currenty = player.body.getPosition().y;
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            player.body.setTransform(currentx, currenty + 16 / PPM, 90);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            player.body.setTransform(currentx, currenty - 16 / PPM, 270);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            player.body.setTransform(currentx - 16 / PPM, currenty, 180);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            player.body.setTransform(currentx + 16 / PPM, currenty, 0);
+        }
+
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     @Override
@@ -173,6 +171,6 @@ public class PlayScreen implements Screen {
     public void dispose() {
         debugRenderer.dispose();
         world.dispose();
-        texture.dispose();
+        yoshiTexture.dispose();
     }
 }
