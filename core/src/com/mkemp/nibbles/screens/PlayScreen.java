@@ -22,7 +22,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mkemp.nibbles.Nibbles;
-import com.mkemp.nibbles.sprites.Head;
+import com.mkemp.nibbles.sprites.Snake;
 import com.mkemp.nibbles.tools.B2WorldCreator;
 
 import static com.mkemp.nibbles.Nibbles.PPM;
@@ -36,7 +36,6 @@ import static com.mkemp.nibbles.Nibbles.WORLD_WIDTH;
 public class PlayScreen implements Screen {
 
     private Nibbles game;
-    private Texture background;
 
     // Camera
     private OrthographicCamera gameCam;
@@ -51,12 +50,11 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer debugRenderer;
     private B2WorldCreator worldCreator;
 
-    private Head player;
+    private Snake player;
+    private final Texture texture;
 
     public PlayScreen(Nibbles game) {
         this.game = game;
-
-        //background = new Texture("background.png");
 
         // Create camera
         gameCam = new OrthographicCamera();
@@ -75,9 +73,10 @@ public class PlayScreen implements Screen {
         //world.setContactListener(new WorldContactListener());
 
         debugRenderer = new Box2DDebugRenderer();
-//        worldCreator = new B2WorldCreator(this);
+        //worldCreator = new B2WorldCreator(this);
 
-        player = new Head(world, new Texture("yoshi.png"), 32f, 32f);
+        texture = new Texture("yoshi.png");
+        player = new Snake(world, this, texture); //, 72f / PPM, 32f / PPM);
 
         BodyDef bodyDef = new BodyDef();
         PolygonShape shape = new PolygonShape();
@@ -107,17 +106,16 @@ public class PlayScreen implements Screen {
         // Render tiled map with updated changes.
         tiledMapRenderer.render();
 
-        // This should be called whenever the camera is altered.
-        // Combine the camera's view and projection matrices.
-        // Convert world coordinates to camera screen coordinates.
-        // --- Render what the camera can see only.
-        //game.batch.setProjectionMatrix(gameCam.combined);
+        // Only render what the camera can see only.
+        game.batch.setProjectionMatrix(gameCam.combined);
 
+        // Render debug lines.
         debugRenderer.render(world, gameCam.combined);
+
         game.batch.begin();
-        //game.batch.draw(background, 0, 0);
         player.draw(game.batch);
         game.batch.end();
+
     }
 
     /**
@@ -126,7 +124,11 @@ public class PlayScreen implements Screen {
     private void update() {
         handleInput();
 
+        // For world movement.
         world.step(1/60f, 6, 2);
+
+        // Update position of sprite.
+        player.update();
 
         gameCam.update();
         tiledMapRenderer.setView(gameCam);
@@ -140,21 +142,18 @@ public class PlayScreen implements Screen {
                 player.body.getLinearVelocity().y <= 0.1)
             player.body.applyLinearImpulse(new Vector2(0, 1f), player.body.getWorldCenter(), true);
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) &&
-        player.body.getLinearVelocity().y >= -0.1)
+                player.body.getLinearVelocity().y >= -0.1)
             player.body.applyLinearImpulse(new Vector2(0, -1f), player.body.getWorldCenter(), true);
         else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) &&
-        player.body.getLinearVelocity().x >= -2)
+                player.body.getLinearVelocity().x >= -2)
             player.body.applyLinearImpulse(new Vector2(-0.4f, 0), player.body.getWorldCenter(), true);
         else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) &&
                 player.body.getLinearVelocity().x <= 2)
             player.body.applyLinearImpulse(new Vector2(0.4f, 0), player.body.getWorldCenter(), true);
-
     }
 
     @Override
-    public void show() {
-
-    }
+    public void show() { }
 
     @Override
     public void resize(int width, int height) {
@@ -162,23 +161,18 @@ public class PlayScreen implements Screen {
     }
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() { }
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() { }
 
     @Override
-    public void hide() {
-
-    }
+    public void hide() { }
 
     @Override
     public void dispose() {
         debugRenderer.dispose();
         world.dispose();
+        texture.dispose();
     }
 }
