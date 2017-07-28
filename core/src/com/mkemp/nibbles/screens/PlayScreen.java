@@ -45,7 +45,8 @@ public class PlayScreen implements Screen {
     private B2WorldCreator worldCreator;
 
     private Snake player;
-    private final Texture yoshiTexture;
+    private Texture yoshiTexture;
+
 
     private GameOverHud gameOverHud;
 
@@ -72,7 +73,7 @@ public class PlayScreen implements Screen {
         worldCreator = new B2WorldCreator(this);
 
         yoshiTexture = new Texture("yoshi.png");
-        player = new Snake(world, this, yoshiTexture); //, 72f / PPM, 32f / PPM);
+        player = new Snake(this, yoshiTexture);
 
         gameOverHud = new GameOverHud(game.batch);
     }
@@ -98,7 +99,11 @@ public class PlayScreen implements Screen {
         game.batch.end();
 
         if (player.snakeIsDead()) {
-           gameOverHud.stage.draw();
+            gameOverHud.stage.draw();
+            if (Gdx.input.justTouched()) {
+                game.setScreen(new PlayScreen((Nibbles) game));
+                dispose();
+            }
         }
     }
 
@@ -165,6 +170,5 @@ public class PlayScreen implements Screen {
     public void dispose() {
         debugRenderer.dispose();
         world.dispose();
-        yoshiTexture.dispose();
     }
 }

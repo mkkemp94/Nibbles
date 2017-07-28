@@ -32,15 +32,17 @@ public class Snake extends Sprite {
 
     private boolean snakeIsDead;
 
-    public Snake(World world, PlayScreen screen, Texture texture) {
-        super(texture);
-        this.world = world;
+    public Snake(PlayScreen screen, Texture texture) {
+        this.world = screen.getWorld();
         this.screen = screen;
 
         moveTimer = 0;
         snakeIsDead = false;
 
-        defineHead();
+        float xpos = 70 / PPM;
+        float ypos = 40 / PPM;
+
+        defineHead(xpos, ypos);
         setBounds(0, 0, 16 / PPM, 16 / PPM);
         setRegion(texture);
     }
@@ -107,9 +109,9 @@ public class Snake extends Sprite {
     /**
      * Create head's body.
      */
-    private void defineHead() {
+    private void defineHead(float x, float y) {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(24 / PPM, 24 / PPM);
+        bodyDef.position.set(x, y);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bodyDef);
 
