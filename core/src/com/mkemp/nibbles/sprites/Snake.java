@@ -24,6 +24,11 @@ public class Snake extends Sprite {
     public static final int LEFT = 180;
     public static final int DOWN = 270;
 
+    private float currentXPosition;
+    private float currentYPosition;
+    private float lastXPosition;
+    private float lastYPosition;
+
     public World world;
     public Body body;
     public PlayScreen screen;
@@ -32,17 +37,17 @@ public class Snake extends Sprite {
 
     private boolean snakeIsDead;
 
-    public Snake(PlayScreen screen, Texture texture) {
+    public Snake(PlayScreen screen, Texture texture, float x, float y) {
         this.world = screen.getWorld();
         this.screen = screen;
 
         moveTimer = 0;
         snakeIsDead = false;
 
-        float xpos = 70 / PPM;
-        float ypos = 40 / PPM;
+        currentXPosition = x;
+        currentYPosition = y;
 
-        defineHead(xpos, ypos);
+        defineHead(currentXPosition, currentYPosition);
         setBounds(0, 0, 16 / PPM, 16 / PPM);
         setRegion(texture);
     }

@@ -19,6 +19,8 @@ import com.mkemp.nibbles.scenes.GameOverHud;
 import com.mkemp.nibbles.sprites.Snake;
 import com.mkemp.nibbles.tools.B2WorldCreator;
 
+import java.util.ArrayList;
+
 import static com.mkemp.nibbles.Nibbles.PPM;
 import static com.mkemp.nibbles.Nibbles.WORLD_HEIGHT;
 import static com.mkemp.nibbles.Nibbles.WORLD_WIDTH;
@@ -47,8 +49,9 @@ public class PlayScreen implements Screen {
     private Snake player;
     private Texture yoshiTexture;
 
-
     private GameOverHud gameOverHud;
+
+    ArrayList<Snake> body;
 
     public PlayScreen(Nibbles game) {
         this.game = game;
@@ -73,7 +76,12 @@ public class PlayScreen implements Screen {
         worldCreator = new B2WorldCreator(this);
 
         yoshiTexture = new Texture("yoshi.png");
-        player = new Snake(this, yoshiTexture);
+        player = new Snake(this, yoshiTexture, 72 / PPM, 40 / PPM);
+
+        Texture eggTexture = new Texture("egg.png");
+        body = new ArrayList<Snake>();
+        body.add(new Snake(this, eggTexture, 56 / PPM, 40 / PPM));
+        body.add(new Snake(this, eggTexture, 40 / PPM, 40 / PPM));
 
         gameOverHud = new GameOverHud(game.batch);
     }
@@ -96,8 +104,12 @@ public class PlayScreen implements Screen {
 
         game.batch.begin();
         player.draw(game.batch);
+
+        for (Snake snake : body)
+            snake.draw(game.batch);
         game.batch.end();
 
+        // Set game over message if snake is dead.
         if (player.snakeIsDead()) {
             gameOverHud.stage.draw();
             if (Gdx.input.justTouched()) {
@@ -117,8 +129,12 @@ public class PlayScreen implements Screen {
         world.step(1/60f, 6, 2);
 
         // Update position of sprite.
-        if (!player.snakeIsDead())
+        if (!player.snakeIsDead()) {
             player.update(dt);
+            for (Snake snake : body) {
+                snake.update(dt);
+            }
+        }
 
         gameCam.update();
         tiledMapRenderer.setView(gameCam);
