@@ -51,7 +51,8 @@ public class PlayScreen implements Screen {
 
     private GameOverHud gameOverHud;
 
-    ArrayList<Snake> body;
+    private ArrayList<Snake> body;
+    boolean availableForInput;
 
     public PlayScreen(Nibbles game) {
         this.game = game;
@@ -76,14 +77,16 @@ public class PlayScreen implements Screen {
         worldCreator = new B2WorldCreator(this);
 
         yoshiTexture = new Texture("yoshi.png");
-        player = new Snake(this, yoshiTexture, 72 / PPM, 40 / PPM);
+        player = new Snake(this, 0, yoshiTexture, 72 / PPM, 40 / PPM);
 
         Texture eggTexture = new Texture("egg.png");
         body = new ArrayList<Snake>();
-        body.add(new Snake(this, eggTexture, 56 / PPM, 40 / PPM));
-        body.add(new Snake(this, eggTexture, 40 / PPM, 40 / PPM));
+        body.add(player);
+        body.add(new Snake(this, 1, eggTexture, 56 / PPM, 40 / PPM));
+        //body.add(new Snake(this, 2, eggTexture, 40 / PPM, 40 / PPM));
 
         gameOverHud = new GameOverHud(game.batch);
+        availableForInput = true;
     }
 
     @Override
@@ -130,9 +133,9 @@ public class PlayScreen implements Screen {
 
         // Update position of sprite.
         if (!player.snakeIsDead()) {
-            player.update(dt);
+            //player.updateSprite(dt);
             for (Snake snake : body) {
-                snake.update(dt);
+                snake.updateSprite(dt);
             }
         }
 
@@ -140,21 +143,62 @@ public class PlayScreen implements Screen {
         tiledMapRenderer.setView(gameCam);
     }
 
+    int moveTimer;
+
     /**
      * Handles input by the user - change snake direction.
      */
     private void handleInput() {
-        if (!player.snakeIsDead()) {
+
+
+        if (!player.snakeIsDead() && availableForInput) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-                player.setDirection(90);
+                Gdx.app.log("Key Pressed", "Up");
+                //player.setDirection(90);
+                for (Snake snake : body) {
+                    snake.addCommandToQueue(90);
+                }
+                setAvailableForInput(false);
+
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-                player.setDirection(270);
+                Gdx.app.log("Key Pressed", "Down");
+                //player.setDirection(270);
+                for (Snake snake : body) {
+                    snake.addCommandToQueue(270);
+                }
+                setAvailableForInput(false);
+
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-                player.setDirection(180);
+                Gdx.app.log("Key Pressed", "Left");
+                //player.setDirection(180);
+                for (Snake snake : body) {
+                    snake.addCommandToQueue(180);
+                }
+                setAvailableForInput(false);
+
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-                player.setDirection(0);
+                Gdx.app.log("Key Pressed", "Right");
+                //player.setDirection(0);
+                for (Snake snake : body) {
+                    snake.addCommandToQueue(0);
+                }
+                setAvailableForInput(false);
+
             }
+//            else {
+//                //Gdx.app.log("No Key Pressed", "Just go straight");
+//
+//                for (Snake snake : body) {
+//                    if (snake.getMoveTimer() >= 1)
+//                        snake.addCommandToQueue(-1);
+//                }
+//                setAvailableForInput(false);
+//            }
         }
+    }
+
+    public void setAvailableForInput(boolean status) {
+        availableForInput = status;
     }
 
     public TiledMap getMap() {

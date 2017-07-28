@@ -11,6 +11,8 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mkemp.nibbles.screens.PlayScreen;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 import static com.mkemp.nibbles.Nibbles.PPM;
 
 /**
@@ -35,11 +37,16 @@ public class Snake extends Sprite {
     private float moveTimer;
     private int direction;
 
+    private int index;
+    private LinkedBlockingQueue<Integer> inputQueue;
+    private int turnsToWait;
+
     private boolean snakeIsDead;
 
-    public Snake(PlayScreen screen, Texture texture, float x, float y) {
+    public Snake(PlayScreen screen, int index, Texture texture, float x, float y) {
         this.world = screen.getWorld();
         this.screen = screen;
+        this.index = index;
 
         moveTimer = 0;
         snakeIsDead = false;
@@ -47,23 +54,57 @@ public class Snake extends Sprite {
         currentXPosition = x;
         currentYPosition = y;
 
+        inputQueue = new LinkedBlockingQueue<Integer>();
+        turnsToWait = index;
+        direction = 0;
+
+        //addCommandToQueue(90);
+        //Gdx.app.log("Snake "+ index, "Polling " + inputQueue.poll());
+
         defineHead(currentXPosition, currentYPosition);
         setBounds(0, 0, 16 / PPM, 16 / PPM);
         setRegion(texture);
     }
 
     /**
-     * Attach sprite.
+     * Move body and attach sprite.
      */
-    public void update(float dt) {
+    public void updateSprite(float dt) {
 
         // Current position of body
         float currentx = body.getPosition().x;
         float currenty = body.getPosition().y;
 
+        // Update move timer
         moveTimer += dt;
 
-        if (moveTimer >= 0.5) {
+        // Step
+        if (moveTimer >= 1) {
+            if (index == 1) Gdx.app.log("Snake " + index, "Queue = " + inputQueue.toString());
+
+            if (turnsToWait > 0) {
+                turnsToWait--;
+                Gdx.app.log("Snake " + index, "Waiting " + turnsToWait);
+            }
+
+//            if (inputQueue.peek() == null) {
+//                turnsToWait = index;
+//                if (index == 1)
+//                    Gdx.app.log("Snake " + index, "Turns to wait = " + turnsToWait);
+//
+//            } else if (turnsToWait > 0) {
+//                turnsToWait--;
+//                if (index == 1)
+//                    Gdx.app.log("Snake " + index, "Turns to wait: " + turnsToWait);
+//            }
+            else {
+                Gdx.app.log("Snake " + index, "Change direction to " + inputQueue.peek());
+                if (!inputQueue.isEmpty()) direction = inputQueue.poll();
+                turnsToWait = index;
+            }
+
+//            if (index == 1)
+//                Gdx.app.log("Snake " + index, "Direction = " + direction);
             // Set position of body
             switch (direction) {
                 case RIGHT:
@@ -78,8 +119,13 @@ public class Snake extends Sprite {
                 case DOWN:
                     body.setTransform(currentx, currenty - 16 / PPM, 0);
                     break;
+                default:
+                    body.setTransform(currentx, currenty - 16 / PPM, 0);
+                    break;
+
             }
             moveTimer = 0;
+            screen.setAvailableForInput(true);
         }
 
         float newx = body.getPosition().x;
@@ -94,6 +140,16 @@ public class Snake extends Sprite {
             setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
     }
 
+    public void addCommandToQueue(int input) {
+
+        inputQueue.add(input);
+
+    }
+
+    public float getMoveTimer() {
+        return moveTimer;
+    }
+
     /**
      * Gets whether or not snake is dead.
      * @return true or false
@@ -104,7 +160,7 @@ public class Snake extends Sprite {
 
     /**
      * Called by handleInput() in PlayScreen.
-     * This sets the direction for the body to move in update().
+     * This sets the direction for the body to move in updateSprite().
      * @param degrees
      */
     public void setDirection(int degrees) {
