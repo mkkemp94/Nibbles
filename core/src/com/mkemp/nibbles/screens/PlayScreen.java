@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mkemp.nibbles.Nibbles;
+import com.mkemp.nibbles.scenes.GameOverHud;
 import com.mkemp.nibbles.sprites.Snake;
 import com.mkemp.nibbles.tools.B2WorldCreator;
 
@@ -46,6 +47,8 @@ public class PlayScreen implements Screen {
     private Snake player;
     private final Texture yoshiTexture;
 
+    private GameOverHud gameOverHud;
+
     public PlayScreen(Nibbles game) {
         this.game = game;
 
@@ -70,6 +73,8 @@ public class PlayScreen implements Screen {
 
         yoshiTexture = new Texture("yoshi.png");
         player = new Snake(world, this, yoshiTexture); //, 72f / PPM, 32f / PPM);
+
+        gameOverHud = new GameOverHud(game.batch);
     }
 
     @Override
@@ -92,6 +97,9 @@ public class PlayScreen implements Screen {
         player.draw(game.batch);
         game.batch.end();
 
+        if (player.snakeIsDead()) {
+           gameOverHud.stage.draw();
+        }
     }
 
     /**
