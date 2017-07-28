@@ -104,46 +104,28 @@ public class PlayScreen implements Screen {
         world.step(1/60f, 6, 2);
 
         // Update position of sprite.
-        player.update(dt);
+        if (!player.snakeIsDead())
+            player.update(dt);
 
         gameCam.update();
         tiledMapRenderer.setView(gameCam);
     }
 
     /**
-     * Handles input by the user.
+     * Handles input by the user - change snake direction.
      */
     private void handleInput() {
-//        if (Gdx.input.isKeyPressed(Input.Keys.UP) &&
-//                player.body.getLinearVelocity().y <= 0.1)
-//            player.body.applyLinearImpulse(new Vector2(0, 1f), player.body.getWorldCenter(), true);
-//        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) &&
-//                player.body.getLinearVelocity().y >= -0.1)
-//            player.body.applyLinearImpulse(new Vector2(0, -1f), player.body.getWorldCenter(), true);
-//        else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) &&
-//                player.body.getLinearVelocity().x >= -2)
-//            player.body.applyLinearImpulse(new Vector2(-0.4f, 0), player.body.getWorldCenter(), true);
-//        else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) &&
-//                player.body.getLinearVelocity().x <= 2)
-//            player.body.applyLinearImpulse(new Vector2(0.4f, 0), player.body.getWorldCenter(), true);
-
-        float currentx = player.body.getPosition().x;
-        float currenty = player.body.getPosition().y;
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            //player.body.setTransform(currentx, currenty + 16 / PPM, 90);
-            player.setDirection(90);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-            //player.body.setTransform(currentx, currenty - 16 / PPM, 270);
-            player.setDirection(270);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-            //player.body.setTransform(currentx - 16 / PPM, currenty, 180);
-            player.setDirection(180);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-            //player.body.setTransform(currentx + 16 / PPM, currenty, 0);
-            player.setDirection(0);
+        if (!player.snakeIsDead()) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                player.setDirection(90);
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                player.setDirection(270);
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                player.setDirection(180);
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                player.setDirection(0);
+            }
         }
-
     }
 
     public TiledMap getMap() {

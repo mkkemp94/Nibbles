@@ -56,37 +56,20 @@ public class Snake extends Sprite {
 
         moveTimer += dt;
 
-//        Gdx.app.log("Current x", ""+(currentx*100));
-//        Gdx.app.log("Current x - 8", ""+(currentx * 100 - 8));
-//        Gdx.app.log("(Current x - 8) % 16", ""+(currentx * 100 - 8) % 16);
-//        Gdx.app.log("Current y", ""+currenty);
-
-
-
-
         if (moveTimer >= 0.5) {
             // Set position of body
             switch (direction) {
                 case RIGHT:
                     body.setTransform(currentx + 16 / PPM, currenty, 0);
-//                    //body.setLinearVelocity(new Vector2(0, 0));
-//                    Gdx.app.log("Moving", "Right");
-//                    body.setLinearVelocity(2000 / PPM, 0);
                     break;
                 case UP:
                     body.setTransform(currentx, currenty + 16 / PPM, 0);
-                    //body.setLinearVelocity(new Vector2(0, 0));
-//                    body.setLinearVelocity(0, 2000 / PPM);
                     break;
                 case LEFT:
                     body.setTransform(currentx - 16 / PPM, currenty, 0);
-                    //body.setLinearVelocity(new Vector2(0, 0));
-//                    body.setLinearVelocity(-2000 / PPM, 0);
                     break;
                 case DOWN:
                     body.setTransform(currentx, currenty - 16 / PPM, 0);
-                    //body.setLinearVelocity(new Vector2(0, 0));
-                    //body.setLinearVelocity(0, -2000 / PPM);
                     break;
             }
             moveTimer = 0;
@@ -94,28 +77,22 @@ public class Snake extends Sprite {
 
         float newx = body.getPosition().x;
         float newy = body.getPosition().y;
-
-        //Gdx.app.log("Newx", ""+newx);
-        Gdx.app.log("Newy", ""+newy);
-
         if (newx <= 0.1 || newx >= 2.3 || newy <= 0.1 || newy >= 2.3) {
             Gdx.app.log("Game", "Over");
+            snakeIsDead = true;
         }
 
-//        else {
-//            if ((currenty * 100 - 8) % 16 == 0) {
-//                Gdx.app.log("Body", "Stopping y");
-//                body.setLinearVelocity(currentx, 0);
-//            }
-//            if ((currentx * 100 - 8) % 16 == 0) {
-//                Gdx.app.log("Body", "Stopping x");
-//                body.setLinearVelocity(0, currenty);
-//            }
-//        }
+        // Set position of sprite - if not dead
+        if (!snakeIsDead)
+            setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+    }
 
-
-        // Set position of sprite
-        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+    /**
+     * Gets whether or not snake is dead.
+     * @return true or false
+     */
+    public boolean snakeIsDead() {
+        return snakeIsDead;
     }
 
     /**
