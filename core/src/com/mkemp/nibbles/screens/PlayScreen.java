@@ -79,10 +79,10 @@ public class PlayScreen implements Screen {
         yoshiTexture = new Texture("yoshi.png");
         player = new Snake(this, 0, yoshiTexture, 72 / PPM, 40 / PPM);
 
-        Texture eggTexture = new Texture("egg.png");
-        body = new ArrayList<Snake>();
-        body.add(player);
-        body.add(new Snake(this, 1, eggTexture, 56 / PPM, 40 / PPM));
+//        Texture eggTexture = new Texture("egg.png");
+//        body = new ArrayList<Snake>();
+//        body.add(player);
+//        body.add(new Snake(this, 1, eggTexture, 56 / PPM, 40 / PPM));
         //body.add(new Snake(this, 2, eggTexture, 40 / PPM, 40 / PPM));
 
         gameOverHud = new GameOverHud(game.batch);
@@ -108,8 +108,8 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         player.draw(game.batch);
 
-        for (Snake snake : body)
-            snake.draw(game.batch);
+//        for (Snake snake : body)
+//            snake.draw(game.batch);
         game.batch.end();
 
         // Set game over message if snake is dead.
@@ -133,10 +133,10 @@ public class PlayScreen implements Screen {
 
         // Update position of sprite.
         if (!player.snakeIsDead()) {
-            //player.updateSprite(dt);
-            for (Snake snake : body) {
-                snake.updateSprite(dt);
-            }
+            player.update(dt);
+//            for (Snake snake : body) {
+//                snake.update(dt);
+//            }
         }
 
         gameCam.update();
@@ -154,34 +154,34 @@ public class PlayScreen implements Screen {
         if (!player.snakeIsDead() && availableForInput) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
                 Gdx.app.log("Key Pressed", "Up");
-                //player.setDirection(90);
-                for (Snake snake : body) {
-                    snake.addCommandToQueue(90);
-                }
+                player.setDirection(90);
+//                for (Snake snake : body) {
+//                    snake.addCommandToQueue(90);
+//                }
                 setAvailableForInput(false);
 
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
                 Gdx.app.log("Key Pressed", "Down");
-                //player.setDirection(270);
-                for (Snake snake : body) {
-                    snake.addCommandToQueue(270);
-                }
+                player.setDirection(270);
+//                for (Snake snake : body) {
+//                    snake.addCommandToQueue(270);
+//                }
                 setAvailableForInput(false);
 
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
                 Gdx.app.log("Key Pressed", "Left");
-                //player.setDirection(180);
-                for (Snake snake : body) {
-                    snake.addCommandToQueue(180);
-                }
+                player.setDirection(180);
+//                for (Snake snake : body) {
+//                    snake.addCommandToQueue(180);
+//                }
                 setAvailableForInput(false);
 
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
                 Gdx.app.log("Key Pressed", "Right");
-                //player.setDirection(0);
-                for (Snake snake : body) {
-                    snake.addCommandToQueue(0);
-                }
+                player.setDirection(0);
+//                for (Snake snake : body) {
+//                    snake.addCommandToQueue(0);
+//                }
                 setAvailableForInput(false);
 
             }
