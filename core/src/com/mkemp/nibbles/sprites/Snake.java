@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mkemp.nibbles.screens.PlayScreen;
 
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.ArrayList;
 
 import static com.mkemp.nibbles.Nibbles.PPM;
 
@@ -19,7 +19,7 @@ import static com.mkemp.nibbles.Nibbles.PPM;
  * Created by mkemp on 7/25/17.
  */
 
-public class Snake extends Sprite {
+public class Snake {
 
     public static final int RIGHT = 0;
     public static final int UP = 90;
@@ -41,10 +41,13 @@ public class Snake extends Sprite {
 //    private LinkedBlockingQueue<Integer> inputQueue;
 //    private int turnsToWait;
 
-    private LinkedBlockingDeque<Body> linkedBlockingDeque;
+    //private LinkedBlockingDeque<Body> linkedBlockingDeque;
+
+    private ArrayList<Body> snakeBody;
     private int snakeLength;
 
     private boolean snakeIsDead;
+    private final Sprite sprite;
 
     public Snake(PlayScreen screen, int index, Texture texture, float x, float y) {
         this.world = screen.getWorld();
@@ -67,16 +70,19 @@ public class Snake extends Sprite {
         snakeLength = 3;
 
         // Add each body piece to the dequeue
-        linkedBlockingDeque = new LinkedBlockingDeque<Body>();
+        //linkedBlockingDeque = new LinkedBlockingDeque<Body>();
+        snakeBody = new ArrayList<Body>();
 
         // Create multiple bodies to match snake length
         for (int i = 0; i < snakeLength; i++) {
             Body body = createBody(currentXPosition - (i * 16), currentYPosition - (i * 16));
-            linkedBlockingDeque.addLast(body);
+            //linkedBlockingDeque.addLast(body);
+            snakeBody.add(body);
         }
 
-        setBounds(0, 0, 16 / PPM, 16 / PPM);
-        setRegion(texture);
+        sprite = new Sprite(texture);
+        sprite.setBounds(0, 0, 16 / PPM, 16 / PPM);
+        sprite.setRegion(texture);
     }
 
     /**
@@ -85,7 +91,8 @@ public class Snake extends Sprite {
     public void update(float dt) {
 
         // Get position of first body
-        Body firstBody = linkedBlockingDeque.peekFirst();
+//        Body firstBody = linkedBlockingDeque.peekFirst();
+        Body firstBody = snakeBody.get(0);
 
         // Current position of body
         float currentx = firstBody.getPosition().x;
@@ -125,7 +132,8 @@ public class Snake extends Sprite {
 
 
             //Body newBody;
-            Body lastBody = linkedBlockingDeque.pollLast();
+            //Body lastBody = linkedBlockingDeque.pollLast();
+            Body lastBody = snakeBody.get(snakeBody.size() - 1);
 
             // Set position of body
             switch (direction) {
@@ -150,12 +158,15 @@ public class Snake extends Sprite {
                     //newBody = createBody(currentx, currenty);
                     break;
             }
-            linkedBlockingDeque.addFirst(lastBody);
+            //linkedBlockingDeque.addFirst(lastBody);
+            snakeBody.remove(snakeBody.size() - 1);
+            snakeBody.add(0, lastBody);
             moveTimer = 0;
             screen.setAvailableForInput(true);
         }
 
-        Body newBody = linkedBlockingDeque.getFirst();
+        //Body newBody = linkedBlockingDeque.getFirst();
+        Body newBody = snakeBody.get(0);
         float newx = newBody.getPosition().x;
         float newy = newBody.getPosition().y;
         if (newx <= 0.1 || newx >= 2.3 || newy <= 0.1 || newy >= 2.3) {
@@ -165,7 +176,7 @@ public class Snake extends Sprite {
 
         // Set position of sprite - if not dead
         if (!snakeIsDead) {
-            setPosition(newBody.getPosition().x - getWidth() / 2, newBody.getPosition().y - getHeight() / 2);
+            sprite.setPosition(newBody.getPosition().x - sprite.getWidth() / 2, newBody.getPosition().y - sprite.getHeight() / 2);
         }
     }
 
@@ -215,8 +226,12 @@ public class Snake extends Sprite {
         return body;
     }
 
-    @Override
     public void draw(Batch batch) {
-        super.draw(batch);
+        //super.draw(batch);
+        for (int i = 0; i < snakeBody.size(); i++) {
+            float bodyX = snakeBody.get(i).getPosition().x;
+            float bodyy = snakeBody.get(i).getPosition().y;
+            sprite.draw(batch);
+        }
     }
 }

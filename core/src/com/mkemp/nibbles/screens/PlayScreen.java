@@ -107,6 +107,7 @@ public class PlayScreen implements Screen {
 
         game.batch.begin();
         player.draw(game.batch);
+        //game.batch.draw(yoshiTexture, player.body.);
 
 //        for (Snake snake : body)
 //            snake.draw(game.batch);
