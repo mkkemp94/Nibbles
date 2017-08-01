@@ -23,12 +23,13 @@ public class SnakePart {
     private Sprite sprite;
     private Body body;
 
-    public SnakePart(PlayScreen screen, Texture texture, float x, float y) {
+    public SnakePart(PlayScreen screen, float x, float y) {
         this.world = screen.getWorld();
 
         // Create this body piece
         createBody(x, y);
 
+        Texture texture = screen.getAssetManager().get("yoshi.png", Texture.class);
         sprite = new Sprite(texture);
         sprite.setBounds(0, 0, 16 / PPM, 16 / PPM);
         sprite.setRegion(texture);

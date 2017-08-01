@@ -3,9 +3,9 @@ package com.mkemp.nibbles.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -30,6 +30,7 @@ import static com.mkemp.nibbles.Nibbles.WORLD_WIDTH;
 public class PlayScreen implements Screen {
 
     private Nibbles game;
+    private AssetManager assetManager;
 
     // Camera
     private OrthographicCamera gameCam;
@@ -45,14 +46,13 @@ public class PlayScreen implements Screen {
     private B2WorldCreator worldCreator;
 
     private Player player;
-    private Texture yoshiTexture;
+    private boolean availableForInput;
 
     private GameOverHud gameOverHud;
 
-    private boolean availableForInput;
-
-    public PlayScreen(Nibbles game) {
+    public PlayScreen(Nibbles game, AssetManager assetManager) {
         this.game = game;
+        this.assetManager = assetManager;
 
         // Create camera
         gameCam = new OrthographicCamera();
@@ -73,8 +73,8 @@ public class PlayScreen implements Screen {
         debugRenderer = new Box2DDebugRenderer();
         worldCreator = new B2WorldCreator(this);
 
-        yoshiTexture = new Texture("yoshi.png");
-        player = new Player(this, yoshiTexture);
+        //yoshiTexture = new Texture("yoshi.png");
+        player = new Player(this);
 
         gameOverHud = new GameOverHud(game.batch);
         availableForInput = true;
@@ -104,7 +104,7 @@ public class PlayScreen implements Screen {
         if (player.snakeIsDead()) {
             gameOverHud.stage.draw();
             if (Gdx.input.justTouched()) {
-                game.setScreen(new PlayScreen((Nibbles) game));
+                game.setScreen(new PlayScreen((Nibbles) game, assetManager));
                 dispose();
             }
         }
@@ -170,6 +170,8 @@ public class PlayScreen implements Screen {
     public World getWorld() {
         return world;
     }
+
+    public AssetManager getAssetManager() { return assetManager; }
 
     @Override
     public void show() { }

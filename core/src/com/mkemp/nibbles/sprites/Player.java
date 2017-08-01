@@ -1,7 +1,6 @@
 package com.mkemp.nibbles.sprites;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mkemp.nibbles.screens.PlayScreen;
@@ -31,7 +30,7 @@ public class Player {
 
     private boolean snakeIsDead;
 
-    public Player(PlayScreen screen, Texture texture) {
+    public Player(PlayScreen screen) {
         this.world = screen.getWorld();
         this.screen = screen;
 
@@ -48,7 +47,7 @@ public class Player {
         snakeBody = new ArrayList<SnakePart>();
 
         for (int i = 0; i < snakeLength; i++)
-            snakeBody.add(new SnakePart(screen, texture, x - (16 * i), y));
+            snakeBody.add(new SnakePart(screen, x - (16 * i), y));
     }
 
     /**
