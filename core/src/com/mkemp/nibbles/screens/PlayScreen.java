@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mkemp.nibbles.Nibbles;
 import com.mkemp.nibbles.scenes.GameOverHud;
+import com.mkemp.nibbles.sprites.Fruit;
 import com.mkemp.nibbles.sprites.Player;
 import com.mkemp.nibbles.tools.B2WorldCreator;
 
@@ -47,6 +48,7 @@ public class PlayScreen implements Screen {
 
     private Player player;
     private boolean availableForInput;
+    private Fruit fruit;
 
     private GameOverHud gameOverHud;
 
@@ -73,8 +75,8 @@ public class PlayScreen implements Screen {
         debugRenderer = new Box2DDebugRenderer();
         worldCreator = new B2WorldCreator(this);
 
-        //yoshiTexture = new Texture("yoshi.png");
         player = new Player(this);
+        fruit = new Fruit(this, 160 / PPM, 160 / PPM);
 
         gameOverHud = new GameOverHud(game.batch);
         availableForInput = true;
@@ -98,6 +100,7 @@ public class PlayScreen implements Screen {
 
         game.batch.begin();
         player.draw(game.batch);
+        fruit.draw(game.batch);
         game.batch.end();
 
         // Set game over message if snake is dead.
