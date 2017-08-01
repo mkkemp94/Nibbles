@@ -17,13 +17,13 @@ import static com.mkemp.nibbles.Nibbles.PPM;
  * Created by mkemp on 7/31/17.
  */
 
-public class BodyPiece {
+public class SnakePart {
 
     public World world;
     private Sprite sprite;
     private Body body;
 
-    public BodyPiece(PlayScreen screen, Texture texture, float x, float y) {
+    public SnakePart(PlayScreen screen, Texture texture, float x, float y) {
         this.world = screen.getWorld();
 
         // Create this body piece
@@ -39,7 +39,7 @@ public class BodyPiece {
         return body.getPosition();
     }
 
-    public void setTransform(float x, float y, float angle) {
+    public void moveTo(float x, float y, float angle) {
         body.setTransform(x, y, angle);
     }
 

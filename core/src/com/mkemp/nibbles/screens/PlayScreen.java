@@ -16,10 +16,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mkemp.nibbles.Nibbles;
 import com.mkemp.nibbles.scenes.GameOverHud;
-import com.mkemp.nibbles.sprites.Snake;
+import com.mkemp.nibbles.sprites.Player;
 import com.mkemp.nibbles.tools.B2WorldCreator;
-
-import java.util.ArrayList;
 
 import static com.mkemp.nibbles.Nibbles.PPM;
 import static com.mkemp.nibbles.Nibbles.WORLD_HEIGHT;
@@ -46,13 +44,12 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer debugRenderer;
     private B2WorldCreator worldCreator;
 
-    private Snake player;
+    private Player player;
     private Texture yoshiTexture;
 
     private GameOverHud gameOverHud;
 
-    private ArrayList<Snake> body;
-    boolean availableForInput;
+    private boolean availableForInput;
 
     public PlayScreen(Nibbles game) {
         this.game = game;
@@ -77,13 +74,7 @@ public class PlayScreen implements Screen {
         worldCreator = new B2WorldCreator(this);
 
         yoshiTexture = new Texture("yoshi.png");
-        player = new Snake(this, 0, yoshiTexture, 72 / PPM, 40 / PPM);
-
-//        Texture eggTexture = new Texture("egg.png");
-//        body = new ArrayList<Snake>();
-//        body.add(player);
-//        body.add(new Snake(this, 1, eggTexture, 56 / PPM, 40 / PPM));
-        //body.add(new Snake(this, 2, eggTexture, 40 / PPM, 40 / PPM));
+        player = new Player(this, yoshiTexture);
 
         gameOverHud = new GameOverHud(game.batch);
         availableForInput = true;
@@ -107,10 +98,6 @@ public class PlayScreen implements Screen {
 
         game.batch.begin();
         player.draw(game.batch);
-        //game.batch.draw(yoshiTexture, player.body.);
-
-//        for (Snake snake : body)
-//            snake.draw(game.batch);
         game.batch.end();
 
         // Set game over message if snake is dead.
@@ -135,16 +122,11 @@ public class PlayScreen implements Screen {
         // Update position of sprite.
         if (!player.snakeIsDead()) {
             player.update(dt);
-//            for (Snake snake : body) {
-//                snake.update(dt);
-//            }
         }
 
         gameCam.update();
         tiledMapRenderer.setView(gameCam);
     }
-
-    int moveTimer;
 
     /**
      * Handles input by the user - change snake direction.
@@ -156,45 +138,24 @@ public class PlayScreen implements Screen {
             if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
                 Gdx.app.log("Key Pressed", "Up");
                 player.setDirection(90);
-//                for (Snake snake : body) {
-//                    snake.addCommandToQueue(90);
-//                }
                 setAvailableForInput(false);
 
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
                 Gdx.app.log("Key Pressed", "Down");
                 player.setDirection(270);
-//                for (Snake snake : body) {
-//                    snake.addCommandToQueue(270);
-//                }
                 setAvailableForInput(false);
 
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
                 Gdx.app.log("Key Pressed", "Left");
                 player.setDirection(180);
-//                for (Snake snake : body) {
-//                    snake.addCommandToQueue(180);
-//                }
                 setAvailableForInput(false);
 
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
                 Gdx.app.log("Key Pressed", "Right");
                 player.setDirection(0);
-//                for (Snake snake : body) {
-//                    snake.addCommandToQueue(0);
-//                }
                 setAvailableForInput(false);
 
             }
-//            else {
-//                //Gdx.app.log("No Key Pressed", "Just go straight");
-//
-//                for (Snake snake : body) {
-//                    if (snake.getMoveTimer() >= 1)
-//                        snake.addCommandToQueue(-1);
-//                }
-//                setAvailableForInput(false);
-//            }
         }
     }
 
