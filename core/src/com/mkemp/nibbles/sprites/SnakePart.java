@@ -19,11 +19,13 @@ import static com.mkemp.nibbles.Nibbles.PPM;
 
 public class SnakePart {
 
+    private PlayScreen screen;
     public World world;
     private Sprite sprite;
     private Body body;
 
     public SnakePart(PlayScreen screen, float x, float y) {
+        this.screen = screen;
         this.world = screen.getWorld();
 
         // Create this body piece
@@ -71,5 +73,9 @@ public class SnakePart {
 
     public void draw(Batch batch) {
         sprite.draw(batch);
+    }
+
+    public void addToTail() {
+        screen.addToTail();
     }
 }

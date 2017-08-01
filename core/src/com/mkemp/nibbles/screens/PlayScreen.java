@@ -162,6 +162,10 @@ public class PlayScreen implements Screen {
         }
     }
 
+    public void addToTail() {
+        player.addToTail();
+    }
+
     public void setAvailableForInput(boolean status) {
         availableForInput = status;
     }

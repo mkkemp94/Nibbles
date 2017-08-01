@@ -143,4 +143,8 @@ public class Player {
         for (SnakePart snakeBody : this.snakeBody)
             snakeBody.draw(batch);
     }
+
+    public void addToTail() {
+
+    }
 }

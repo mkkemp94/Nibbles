@@ -12,6 +12,9 @@ public class Nibbles extends Game {
 	public static final int WORLD_HEIGHT = 242;
 	public static final float PPM = 100;
 
+	public static final int SNAKE_BIT = 1;
+	public static final int FRUIT_BIT = 2;
+
 	public SpriteBatch batch;
 
 	private AssetManager assetManager;
