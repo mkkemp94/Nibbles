@@ -89,30 +89,31 @@ public class Player {
         float headYPos = head.getPosition().y;
 
         // Step
-        if (moveTimer >= 1) {
+        if (moveTimer >= 0.8) {
             int lastPiece = snakeBody.size() - 1;
-            SnakePart newPiece = snakeBody.get(lastPiece);
+            SnakePart movingPiece = snakeBody.get(lastPiece);
 
             // Set position of body
             switch (direction) {
                 case RIGHT:
-                    newPiece.moveTo(headXPos + 16 / PPM, headYPos, 0);
+                    movingPiece.moveTo(headXPos + 16 / PPM, headYPos, 0);
                     break;
                 case LEFT:
-                    newPiece.moveTo(headXPos - 16 / PPM, headYPos, 0);
+                    movingPiece.moveTo(headXPos - 16 / PPM, headYPos, 0);
                     break;
                 case UP:
-                    newPiece.moveTo(headXPos, headYPos + 16 / PPM, 0);
+                    movingPiece.moveTo(headXPos, headYPos + 16 / PPM, 0);
                     break;
                 case DOWN:
-                    newPiece.moveTo(headXPos, headYPos - 16 / PPM, 0);
+                    movingPiece.moveTo(headXPos, headYPos - 16 / PPM, 0);
                     break;
                 default:
-                    newPiece.moveTo(headXPos, headYPos - 16 / PPM, 0);
+                    movingPiece.moveTo(headXPos, headYPos - 16 / PPM, 0);
                     break;
             }
+            movingPiece.setSpriteRotation(direction);
             snakeBody.remove(lastPiece);
-            snakeBody.add(0, newPiece);
+            snakeBody.add(0, movingPiece);
             moveTimer = 0;
             screen.setAvailableForInput(true);
         }

@@ -33,7 +33,7 @@ public class SnakePart {
         sprite = new Sprite(texture);
         sprite.setBounds(0, 0, 16 / PPM, 16 / PPM);
         sprite.setRegion(texture);
-
+        sprite.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
     }
 
     public Vector2 getPosition() {
@@ -46,6 +46,10 @@ public class SnakePart {
 
     public void setSpritePosition(float x, float y) {
         sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 2);
+    }
+
+    public void setSpriteRotation(float direction) {
+        sprite.setRotation(direction);
     }
 
     /**
