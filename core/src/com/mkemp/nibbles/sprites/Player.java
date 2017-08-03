@@ -29,6 +29,7 @@ public class Player {
     private int snakeLength;
 
     private boolean snakeIsDead;
+    private boolean addToTail;
 
     public Player(PlayScreen screen) {
         this.world = screen.getWorld();
@@ -47,7 +48,7 @@ public class Player {
         snakeBody = new ArrayList<SnakePart>();
 
         for (int i = 0; i < snakeLength; i++)
-            snakeBody.add(new SnakePart(screen, x - (16 * i), y));
+            snakeBody.add(new SnakePart(screen, x - (16 * i), y, 0));
     }
 
     /**
@@ -84,14 +85,20 @@ public class Player {
         // Get position of first body
         SnakePart head = snakeBody.get(0);
 
+        // Get position of last body
+        int lastIndex = snakeBody.size() - 1;
+        SnakePart movingPiece = snakeBody.get(lastIndex);
+        float lastRotation = movingPiece.getSpriteRotation();
+
         // Current position of body
         float headXPos = head.getPosition().x;
         float headYPos = head.getPosition().y;
 
+        float tailXPos = movingPiece.getPosition().x;
+        float tailYPos = movingPiece.getPosition().y;
+
         // Step
         if (moveTimer >= 0.8) {
-            int lastPiece = snakeBody.size() - 1;
-            SnakePart movingPiece = snakeBody.get(lastPiece);
 
             // Set position of body
             switch (direction) {
@@ -112,8 +119,14 @@ public class Player {
                     break;
             }
             movingPiece.setSpriteRotation(direction);
-            snakeBody.remove(lastPiece);
+            snakeBody.remove(lastIndex);
             snakeBody.add(0, movingPiece);
+
+            if (addToTail) {
+                snakeBody.add(new SnakePart(screen, tailXPos, tailYPos, lastRotation));
+                addToTail = false;
+            }
+
             moveTimer = 0;
             screen.setAvailableForInput(true);
         }
@@ -145,6 +158,7 @@ public class Player {
     }
 
     public void addToTail() {
-
+        Gdx.app.log("Player", "Adding to tail");
+        addToTail = true;
     }
 }

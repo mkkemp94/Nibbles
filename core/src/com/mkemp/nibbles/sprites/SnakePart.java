@@ -27,7 +27,7 @@ public class SnakePart {
     private Sprite sprite;
     private Body body;
 
-    public SnakePart(PlayScreen screen, float x, float y) {
+    public SnakePart(PlayScreen screen, float x, float y, float roation) {
         this.screen = screen;
         this.world = screen.getWorld();
 
@@ -39,6 +39,7 @@ public class SnakePart {
         sprite.setBounds(0, 0, 16 / PPM, 16 / PPM);
         sprite.setRegion(texture);
         sprite.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
+        sprite.setRotation(roation);
     }
 
     public Vector2 getPosition() {
@@ -55,6 +56,10 @@ public class SnakePart {
 
     public void setSpriteRotation(float direction) {
         sprite.setRotation(direction);
+    }
+
+    public float getSpriteRotation() {
+        return sprite.getRotation();
     }
 
     /**
