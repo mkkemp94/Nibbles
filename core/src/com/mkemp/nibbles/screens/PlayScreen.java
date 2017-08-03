@@ -19,6 +19,7 @@ import com.mkemp.nibbles.scenes.GameOverHud;
 import com.mkemp.nibbles.sprites.Fruit;
 import com.mkemp.nibbles.sprites.Player;
 import com.mkemp.nibbles.tools.B2WorldCreator;
+import com.mkemp.nibbles.tools.WorldContactListener;
 
 import static com.mkemp.nibbles.Nibbles.PPM;
 import static com.mkemp.nibbles.Nibbles.WORLD_HEIGHT;
@@ -70,13 +71,13 @@ public class PlayScreen implements Screen {
 
         // Construct a world
         world = new World(new Vector2(0, 0), false);
-        //world.setContactListener(new WorldContactListener());
+        world.setContactListener(new WorldContactListener());
 
         debugRenderer = new Box2DDebugRenderer();
         worldCreator = new B2WorldCreator(this);
 
         player = new Player(this);
-        fruit = new Fruit(this, 160 / PPM, 160 / PPM);
+        fruit = new Fruit(this, 88 / PPM, 88 / PPM);
 
         gameOverHud = new GameOverHud(game.batch);
         availableForInput = true;
@@ -127,6 +128,8 @@ public class PlayScreen implements Screen {
             player.update(dt);
         }
 
+        fruit.update();
+
         gameCam.update();
         tiledMapRenderer.setView(gameCam);
     }
@@ -163,6 +166,8 @@ public class PlayScreen implements Screen {
     }
 
     public void addToTail() {
+        Gdx.app.log("Screen", "Calling player addToTail()");
+        fruit.setToDestroy();
         player.addToTail();
     }
 

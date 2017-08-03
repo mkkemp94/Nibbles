@@ -1,5 +1,6 @@
 package com.mkemp.nibbles.sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,7 +12,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mkemp.nibbles.screens.PlayScreen;
 
+import static com.mkemp.nibbles.Nibbles.FRUIT_BIT;
 import static com.mkemp.nibbles.Nibbles.PPM;
+import static com.mkemp.nibbles.Nibbles.SNAKE_BIT;
 
 /**
  * Created by mkemp on 7/31/17.
@@ -62,13 +65,16 @@ public class SnakePart {
         bodyDef.position.set(x, y);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bodyDef);
+        body.setUserData(this);
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(6 / PPM);
+        fixtureDef.filter.categoryBits = SNAKE_BIT;
+        fixtureDef.filter.maskBits = FRUIT_BIT;
 
         fixtureDef.shape = circleShape;
-        body.createFixture(fixtureDef);
+        body.createFixture(fixtureDef).setUserData(this);
     }
 
     public void draw(Batch batch) {
@@ -76,6 +82,7 @@ public class SnakePart {
     }
 
     public void addToTail() {
+        Gdx.app.log("SnakePart", "Calling screen addToTail()");
         screen.addToTail();
     }
 }

@@ -30,6 +30,8 @@ public class WorldContactListener implements ContactListener {
             case SNAKE_BIT | FRUIT_BIT:
                 if (fixA.getFilterData().categoryBits == SNAKE_BIT)
                     ((SnakePart) fixA.getUserData()).addToTail();
+                else
+                    ((SnakePart) fixB.getUserData()).addToTail();
         }
     }
 
