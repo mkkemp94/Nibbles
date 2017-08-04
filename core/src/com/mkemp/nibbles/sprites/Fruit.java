@@ -1,7 +1,6 @@
 package com.mkemp.nibbles.sprites;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -23,6 +22,7 @@ public class Fruit extends Sprite {
     private PlayScreen screen;
     private World world;
     private Body body;
+    private boolean setToMove;
     private boolean setToDestroy;
     private boolean destroyed;
 
@@ -40,14 +40,20 @@ public class Fruit extends Sprite {
         setRegion(texture);
     }
 
+    boolean startingPosition = true;
     /**
      * This gets called every time the screen's render() method updates.
      */
     public void update() {
-        // TODO : Instead of destroying fruit, I need to move it.
-        if (setToDestroy && !destroyed) {
-            world.destroyBody(body);
-            destroyed = true;
+        if (setToMove) {
+            if (startingPosition) {
+                body.setTransform(88 / PPM, 88 / PPM, 0);
+                setPosition(80 / PPM, 80 / PPM);
+            }
+            else {
+                body.setTransform(168 / PPM, 168 / PPM, 0);
+                setPosition(160 / PPM, 160 / PPM);
+            }
         }
     }
 
@@ -56,8 +62,9 @@ public class Fruit extends Sprite {
      * Invoke the screen's addToTail() method.
      */
     public void eatFruit() {
-        // TODO: Move instead of destroy.
-        setToDestroy = true;
+        setToMove = true;
+        startingPosition = !startingPosition;
+
         screen.addToTail();
     }
 
@@ -79,12 +86,5 @@ public class Fruit extends Sprite {
 
         fixtureDef.shape = circleShape;
         body.createFixture(fixtureDef).setUserData(this);
-    }
-
-    @Override
-    public void draw(Batch batch) {
-        // TODO: Move instead of destroy.
-        if (!destroyed)
-            super.draw(batch);
     }
 }

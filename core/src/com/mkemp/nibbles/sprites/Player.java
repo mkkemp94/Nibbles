@@ -53,7 +53,8 @@ public class Player {
         snakeBody = new ArrayList<SnakePart>();
 
         // Start snake at a length of 1.
-        snakeBody.add(new SnakePart(screen, x, y, 0));
+        for (int i = 0; i < 3; i++)
+            snakeBody.add(new SnakePart(screen, x - (i * 16 / PPM), y, 0));
     }
 
     /**
@@ -96,8 +97,11 @@ public class Player {
         // Move the snake to this time.
         if (moveTimer >= 0.3) {
 
+            Gdx.app.log("Y pos", headYPos+"");
+
             // Move tail to front.
             // TODO : Rotating left shouldn't be upside down.
+            // TODO : Try moving with velocity instead of transforming.
             switch (direction) {
                 case RIGHT:
                     getTail().moveTo(headXPos + 16 / PPM, headYPos, 0);

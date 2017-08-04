@@ -99,7 +99,7 @@ public class SnakePart {
     private void createBody(float x, float y) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
         body = world.createBody(bodyDef);
         body.setUserData(this);
 
