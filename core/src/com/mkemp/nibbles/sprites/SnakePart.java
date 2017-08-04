@@ -99,7 +99,7 @@ public class SnakePart {
     private void createBody(float x, float y) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
-        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bodyDef);
         body.setUserData(this);
 
@@ -107,7 +107,7 @@ public class SnakePart {
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(6 / PPM);
         fixtureDef.filter.categoryBits = SNAKE_BIT;
-        fixtureDef.filter.maskBits = FRUIT_BIT;
+        fixtureDef.filter.maskBits = FRUIT_BIT | SNAKE_BIT;
 
         fixtureDef.shape = circleShape;
         body.createFixture(fixtureDef).setUserData(this);
@@ -119,5 +119,12 @@ public class SnakePart {
      */
     public void draw(Batch batch) {
         sprite.draw(batch);
+    }
+
+    /**
+     * Something bad happened to snake. Set to game over.
+     */
+    public void gameOver() {
+        screen.setSnakeIsDead();
     }
 }

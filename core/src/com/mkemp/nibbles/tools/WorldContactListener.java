@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mkemp.nibbles.sprites.Fruit;
+import com.mkemp.nibbles.sprites.SnakePart;
 
 import static com.mkemp.nibbles.Nibbles.FRUIT_BIT;
 import static com.mkemp.nibbles.Nibbles.SNAKE_BIT;
@@ -28,13 +29,17 @@ public class WorldContactListener implements ContactListener {
 
         switch (cdef) {
             case SNAKE_BIT | FRUIT_BIT:
+                contact.setEnabled(false);
                 if (fixA.getFilterData().categoryBits == FRUIT_BIT)
                     ((Fruit) fixA.getUserData()).eatFruit();
                 else
                     ((Fruit) fixB.getUserData()).eatFruit();
                 break;
 
-            // TODO : need case for snake hits snake
+            case SNAKE_BIT | SNAKE_BIT:
+                Gdx.app.log("Collision", "Snake");
+                ((SnakePart) fixA.getUserData()).gameOver();
+                break;
         }
     }
 

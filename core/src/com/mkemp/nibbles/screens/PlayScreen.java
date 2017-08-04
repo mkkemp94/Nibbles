@@ -109,14 +109,7 @@ public class PlayScreen implements Screen {
 
         // Show game over message if snake is dead.
         if (player.snakeIsDead()) {
-            gameOverHud.stage.draw();
-
-            // Start new game if we touch the screen.
-            if (Gdx.input.justTouched()) {
-                // TODO : Move to another method. Reset score etc.
-                game.setScreen(new PlayScreen((Nibbles) game, assetManager));
-                dispose();
-            }
+            gameOver();
         }
     }
 
@@ -169,13 +162,42 @@ public class PlayScreen implements Screen {
     }
 
     /**
-     * Destroy
+     * Tell snake to add a new piece to its tail.
      */
     public void addToTail() {
         Gdx.app.log("Screen", "Calling player addToTail()");
         player.addToTail();
     }
 
+    /**
+     * Snake has ran into itself. Game over.
+     */
+    public void setSnakeIsDead() {
+        player.setSnakeIsDead();
+    }
+
+    /**
+     * Show the game over stage,
+     */
+    private void gameOver() {
+
+        gameOverHud.stage.draw();
+
+        // Start new game if we touch the screen.
+        if (Gdx.input.justTouched()) {
+            startNewGame();
+        }
+    }
+
+    /**
+     * Start a new game.
+     * Dispose of this one.
+     */
+    private void startNewGame() {
+        // TODO : Reset score etc.
+        game.setScreen(new PlayScreen((Nibbles) game, assetManager));
+        dispose();
+    }
 
     public TiledMap getMap() {
         return map;
