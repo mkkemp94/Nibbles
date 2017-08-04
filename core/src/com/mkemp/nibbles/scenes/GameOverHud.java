@@ -11,8 +11,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import static com.mkemp.nibbles.Nibbles.WORLD_HEIGHT;
-import static com.mkemp.nibbles.Nibbles.WORLD_WIDTH;
+import static com.mkemp.nibbles.Nibbles.SCREEN_HEIGHT;
+import static com.mkemp.nibbles.Nibbles.SCREEN_WIDTH;
 
 /**
  * Created by mkemp on 7/28/17.
@@ -26,7 +26,7 @@ public class GameOverHud implements Disposable {
 
     public GameOverHud(SpriteBatch sb) {
 
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
+        viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
         Table table = new Table(); // defaults in center

@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mkemp.nibbles.scenes.Hud;
 import com.mkemp.nibbles.screens.PlayScreen;
 
 import static com.mkemp.nibbles.Nibbles.FRUIT_BIT;
@@ -22,6 +23,7 @@ public class Fruit extends Sprite {
     private PlayScreen screen;
     private World world;
     private Body body;
+    private Hud scoreHud;
     private boolean setToMove;
 
     // TODO : Make stage larger than screen?
@@ -31,9 +33,10 @@ public class Fruit extends Sprite {
     private int tileWidth = 16;
     private int tileHeight = 16;
 
-    public Fruit(PlayScreen screen, float x, float y) {
+    public Fruit(PlayScreen screen, Hud scoreHud, float x, float y) {
         this.world = screen.getWorld();
         this.screen = screen;
+        this.scoreHud = scoreHud;
 
         // Create this body piece
         createFruit(x, y);
@@ -74,6 +77,7 @@ public class Fruit extends Sprite {
      * Invoke the screen's addToTail() method.
      */
     public void eatFruit() {
+        scoreHud.addScore(10);
         setToMove = true;
         screen.addToTail();
     }

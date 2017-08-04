@@ -16,14 +16,15 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mkemp.nibbles.Nibbles;
 import com.mkemp.nibbles.scenes.GameOverHud;
+import com.mkemp.nibbles.scenes.Hud;
 import com.mkemp.nibbles.sprites.Fruit;
 import com.mkemp.nibbles.sprites.Player;
 import com.mkemp.nibbles.tools.B2WorldCreator;
 import com.mkemp.nibbles.tools.WorldContactListener;
 
 import static com.mkemp.nibbles.Nibbles.PPM;
-import static com.mkemp.nibbles.Nibbles.WORLD_HEIGHT;
-import static com.mkemp.nibbles.Nibbles.WORLD_WIDTH;
+import static com.mkemp.nibbles.Nibbles.SCREEN_HEIGHT;
+import static com.mkemp.nibbles.Nibbles.SCREEN_WIDTH;
 
 /**
  * Created by mkemp on 7/25/17.
@@ -51,6 +52,7 @@ public class PlayScreen implements Screen {
     private Fruit fruit;
 
     private GameOverHud gameOverHud;
+    private Hud scoreHud;
 
     public PlayScreen(Nibbles game, AssetManager assetManager) {
         this.game = game;
@@ -58,7 +60,9 @@ public class PlayScreen implements Screen {
 
         // Create camera
         gameCam = new OrthographicCamera();
-        gamePort = new FitViewport(WORLD_WIDTH / PPM, WORLD_HEIGHT / PPM, gameCam);
+        gamePort = new FitViewport(SCREEN_WIDTH / PPM, SCREEN_HEIGHT / PPM, gameCam);
+
+        scoreHud = new Hud(game.batch);
 
         // Render tile map
         mapLoader = new TmxMapLoader();
@@ -78,11 +82,12 @@ public class PlayScreen implements Screen {
 
         // Create player and first fruit
         player = new Player(this);
-        fruit = new Fruit(this, 88 / PPM, 88 / PPM);
+        fruit = new Fruit(this, scoreHud, 88 / PPM, 88 / PPM);
 
-        // Game over hud that displays when we hit a wall
+        // Game over scoreHud that displays when we hit a wall
         // TODO: Maybe add objects that snake can crash into when he gets big enough?
         gameOverHud = new GameOverHud(game.batch);
+
     }
 
     @Override
@@ -106,6 +111,9 @@ public class PlayScreen implements Screen {
         player.draw(game.batch);
         fruit.draw(game.batch);
         game.batch.end();
+
+        // Draw the hud.
+        scoreHud.stage.draw();
 
         // Show game over message if snake is dead.
         if (player.snakeIsDead()) {
@@ -194,7 +202,6 @@ public class PlayScreen implements Screen {
      * Dispose of this one.
      */
     private void startNewGame() {
-        // TODO : Reset score etc.
         game.setScreen(new PlayScreen((Nibbles) game, assetManager));
         dispose();
     }
@@ -230,5 +237,7 @@ public class PlayScreen implements Screen {
     public void dispose() {
         debugRenderer.dispose();
         world.dispose();
+        gameOverHud.dispose();
+        scoreHud.dispose();
     }
 }
