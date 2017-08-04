@@ -44,7 +44,7 @@ public class Player {
 
         // Position for snake to start at.
         // TODO : Make this random.
-        float x = 168 / PPM;
+        float x = 72 / PPM;
         float y = 40 / PPM;
 
         direction = 0;
@@ -53,7 +53,7 @@ public class Player {
         snakeBody = new ArrayList<SnakePart>();
 
         // Start snake at a length of 1.
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < 3; i++)
             snakeBody.add(new SnakePart(screen, x - (i * 16 / PPM), y, 0));
     }
 

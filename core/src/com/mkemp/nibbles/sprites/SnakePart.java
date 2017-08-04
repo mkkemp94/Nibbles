@@ -14,6 +14,7 @@ import com.mkemp.nibbles.screens.PlayScreen;
 import static com.mkemp.nibbles.Nibbles.FRUIT_BIT;
 import static com.mkemp.nibbles.Nibbles.PPM;
 import static com.mkemp.nibbles.Nibbles.SNAKE_BIT;
+import static com.mkemp.nibbles.Nibbles.WALL_BIT;
 
 /**
  * Created by mkemp on 7/31/17.
@@ -107,7 +108,7 @@ public class SnakePart {
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(6 / PPM);
         fixtureDef.filter.categoryBits = SNAKE_BIT;
-        fixtureDef.filter.maskBits = FRUIT_BIT | SNAKE_BIT;
+        fixtureDef.filter.maskBits = FRUIT_BIT | SNAKE_BIT | WALL_BIT;
 
         fixtureDef.shape = circleShape;
         body.createFixture(fixtureDef).setUserData(this);

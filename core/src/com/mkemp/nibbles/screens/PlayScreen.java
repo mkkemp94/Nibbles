@@ -70,8 +70,8 @@ public class PlayScreen implements Screen {
 
         // Construct a world
         world = new World(new Vector2(0, 0), false);
-        world.setContactListener(new WorldContactListener());
         worldCreator = new B2WorldCreator(this);
+        world.setContactListener(new WorldContactListener());
 
         // Debug rendered to show debug lines
         debugRenderer = new Box2DDebugRenderer();

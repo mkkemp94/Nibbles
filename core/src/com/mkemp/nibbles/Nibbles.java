@@ -8,12 +8,13 @@ import com.mkemp.nibbles.screens.PlayScreen;
 
 public class Nibbles extends Game {
 
-	public static final int WORLD_WIDTH = 242;
-	public static final int WORLD_HEIGHT = 242;
+	public static final int WORLD_WIDTH = 240;
+	public static final int WORLD_HEIGHT = 240;
 	public static final float PPM = 100;
 
 	public static final int SNAKE_BIT = 1;
 	public static final int FRUIT_BIT = 2;
+	public static final int WALL_BIT = 4;
 
 	public SpriteBatch batch;
 

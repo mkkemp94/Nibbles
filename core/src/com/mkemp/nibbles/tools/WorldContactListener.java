@@ -11,6 +11,7 @@ import com.mkemp.nibbles.sprites.SnakePart;
 
 import static com.mkemp.nibbles.Nibbles.FRUIT_BIT;
 import static com.mkemp.nibbles.Nibbles.SNAKE_BIT;
+import static com.mkemp.nibbles.Nibbles.WALL_BIT;
 
 /**
  * Created by mkemp on 7/26/17.
@@ -28,6 +29,15 @@ public class WorldContactListener implements ContactListener {
         int cdef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 
         switch (cdef) {
+            case SNAKE_BIT | WALL_BIT:
+                Gdx.app.log("Collision", "Wall");
+                contact.setEnabled(true);
+                if (fixA.getFilterData().categoryBits == SNAKE_BIT)
+                    ((SnakePart) fixA.getUserData()).gameOver();
+                else
+                    ((SnakePart) fixB.getUserData()).gameOver();
+                break;
+
             case SNAKE_BIT | FRUIT_BIT:
                 contact.setEnabled(false);
                 if (fixA.getFilterData().categoryBits == FRUIT_BIT)
@@ -40,6 +50,8 @@ public class WorldContactListener implements ContactListener {
                 Gdx.app.log("Collision", "Snake");
                 ((SnakePart) fixA.getUserData()).gameOver();
                 break;
+
+
         }
     }
 
