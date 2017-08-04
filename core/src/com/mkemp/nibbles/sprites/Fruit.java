@@ -23,8 +23,13 @@ public class Fruit extends Sprite {
     private World world;
     private Body body;
     private boolean setToMove;
-    private boolean setToDestroy;
-    private boolean destroyed;
+
+    // TODO : Make stage larger than screen?
+    private int stageWidth = 13;
+    private int stageHeight = 13;
+
+    private int tileWidth = 16;
+    private int tileHeight = 16;
 
     public Fruit(PlayScreen screen, float x, float y) {
         this.world = screen.getWorld();
@@ -34,27 +39,34 @@ public class Fruit extends Sprite {
         createFruit(x, y);
 
         setBounds(0, 0, 16 / PPM, 16 / PPM);
-        setPosition(body.getPosition().x - 8 / PPM, body.getPosition().y - 8 / PPM);
+        moveFruitToRandomSpot();
 
         Texture texture = screen.getAssetManager().get("yoshi.png", Texture.class);
         setRegion(texture);
     }
 
-    boolean startingPosition = true;
     /**
      * This gets called every time the screen's render() method updates.
      */
     public void update() {
-        if (setToMove) {
-            if (startingPosition) {
-                body.setTransform(88 / PPM, 88 / PPM, 0);
-                setPosition(80 / PPM, 80 / PPM);
-            }
-            else {
-                body.setTransform(168 / PPM, 168 / PPM, 0);
-                setPosition(160 / PPM, 160 / PPM);
-            }
-        }
+        if (setToMove)
+            moveFruitToRandomSpot();
+    }
+
+    /**
+     * Moves the fruit to a random spot on the board.
+     */
+    private void moveFruitToRandomSpot() {
+        int randomX = (int) (Math.random() * stageWidth + 1);
+        int randomY = (int) (Math.random() * stageHeight + 1);
+
+        float newXCoord = (float) (randomX * tileWidth);
+        float newYCoord = (float) (randomY * tileHeight);
+
+        body.setTransform((newXCoord + 8) / PPM, (newYCoord + 8) / PPM, 0);
+        setPosition(newXCoord / PPM, newYCoord / PPM);
+
+        setToMove = false;
     }
 
     /**
@@ -63,8 +75,6 @@ public class Fruit extends Sprite {
      */
     public void eatFruit() {
         setToMove = true;
-        startingPosition = !startingPosition;
-
         screen.addToTail();
     }
 

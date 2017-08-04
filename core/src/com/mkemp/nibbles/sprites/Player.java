@@ -43,7 +43,7 @@ public class Player {
         snakeIsDead = false;
 
         // Position for snake to start at.
-        // TODO : Make this random.
+        // TODO : Make this random?
         float x = 72 / PPM;
         float y = 40 / PPM;
 
@@ -66,7 +66,7 @@ public class Player {
         moveSnake(dt);
 
         // Check for game over.
-        // TODO : Use world contact listener for this.
+        // TODO : Use world contact listener for this?
         float headXPos = snakeBody.get(0).getPosition().x;
         float headYPos = snakeBody.get(0).getPosition().y;
         if (headXPos <= 0.1 || headXPos >= 2.3 || headYPos <= 0.1 || headYPos >= 2.3) {
@@ -95,6 +95,7 @@ public class Player {
         float tailYPos = getTail().getPosition().y;
 
         // Move the snake to this time.
+        // TODO : Become faster every time I eat a fruit.
         if (moveTimer >= 0.3) {
 
             Gdx.app.log("Y pos", headYPos+"");
