@@ -104,23 +104,16 @@ public class Player {
             // TODO : Try moving with velocity instead of transforming.
             switch (direction) {
                 case RIGHT:
-                    getTail().moveTo(headXPos + 16 / PPM, headYPos, 0);
-                    getTail().setSpriteRotation(direction);
+                    getTail().moveTo(headXPos + 16 / PPM, headYPos, direction);
                     break;
                 case LEFT:
-                    getTail().moveTo(headXPos - 16 / PPM, headYPos, 0);
-                    getTail().setSpriteRotation(direction);
+                    getTail().moveTo(headXPos - 16 / PPM, headYPos, direction);
                     break;
                 case UP:
-                    getTail().moveTo(headXPos, headYPos + 16 / PPM, 0);
-                    getTail().setSpriteRotation(direction);
+                    getTail().moveTo(headXPos, headYPos + 16 / PPM, direction);
                     break;
                 case DOWN:
-                    getTail().moveTo(headXPos, headYPos - 16 / PPM, 0);
-                    getTail().setSpriteRotation(direction);
-                    break;
-                default:
-                    getTail().moveTo(headXPos, headYPos - 16 / PPM, 0);
+                    getTail().moveTo(headXPos, headYPos - 16 / PPM, direction);
                     break;
             }
 
@@ -176,6 +169,14 @@ public class Player {
      * @param degrees
      */
     public void setDirection(int degrees) {
+
+        // Don't move in the opposite direction.
+        if (direction == 0 && degrees == 180 ||
+                direction == 90 && degrees == 270 ||
+                direction == 180 && degrees == 0 ||
+                direction == 270 && degrees == 90)
+            return;
+
         direction = degrees;
     }
 

@@ -26,6 +26,7 @@ public class SnakePart {
     public World world;
     private Sprite sprite;
     private Body body;
+    private boolean isFlipped;
 
     public SnakePart(PlayScreen screen, float x, float y, float rotation) {
         this.screen = screen;
@@ -43,8 +44,8 @@ public class SnakePart {
         sprite.setRegion(texture);
         sprite.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
         sprite.setRotation(rotation);
-
-        setNewSpritePosition();
+        sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2,
+                body.getPosition().y - sprite.getHeight() / 2);
     }
 
     /**
@@ -59,24 +60,28 @@ public class SnakePart {
      * Transform this snake part to a new x, y coordinate.
      * @param x : x-coordinate
      * @param y : y-coordinate
-     * @param angle : the angle it should be facing
+     * @param direction : the direction it should be facing
      */
-    public void moveTo(float x, float y, float angle) {
-        body.setTransform(x, y, angle);
-        setNewSpritePosition();
-    }
-
-    public void setNewSpritePosition() {
+    public void moveTo(float x, float y, float direction) {
+        body.setTransform(x, y, 0);
         sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2,
                 body.getPosition().y - sprite.getHeight() / 2);
-    }
 
-    /**
-     * Set the rotation of this snake part's sprite.
-     * @param direction : degrees to rotate the sprite to
-     */
-    public void setSpriteRotation(float direction) {
-        sprite.setRotation(direction);
+        if (direction == 180) {
+            sprite.setRotation(0);
+            if (!isFlipped) {
+                sprite.flip(true, false);
+                isFlipped = true;
+            }
+        }
+        else {
+            if (isFlipped) {
+                sprite.flip(true, false);
+                isFlipped = false;
+            }
+            sprite.setRotation(direction);
+
+        }
     }
 
     /**
@@ -85,11 +90,6 @@ public class SnakePart {
      */
     public float getSpriteRotation() {
         return sprite.getRotation();
-    }
-
-    // TODO : Flip sprite when moving left ONLY
-    public void flipSprite() {
-        sprite.flip(true, false);
     }
 
     /**

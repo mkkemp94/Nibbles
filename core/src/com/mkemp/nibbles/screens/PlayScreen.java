@@ -147,7 +147,6 @@ public class PlayScreen implements Screen {
      */
     private void handleInput() {
 
-        // TODO: I shouldn't be able to flip direction.
         if (!player.snakeIsDead()) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
                 Gdx.app.log("Key Pressed", "Up");

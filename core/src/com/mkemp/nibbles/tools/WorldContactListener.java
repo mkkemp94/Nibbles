@@ -32,6 +32,9 @@ public class WorldContactListener implements ContactListener {
                     ((Fruit) fixA.getUserData()).eatFruit();
                 else
                     ((Fruit) fixB.getUserData()).eatFruit();
+                break;
+
+            // TODO : need case for snake hits snake
         }
     }
 
