@@ -32,6 +32,9 @@ public class Player {
     private boolean snakeIsDead;
     private boolean addToTail;
 
+    private float snakeSpeed;
+    private int speedCounter;
+
     public Player(PlayScreen screen) {
         this.world = screen.getWorld();
         this.screen = screen;
@@ -39,6 +42,9 @@ public class Player {
         // This gets updated every render cycle.
         // Snake moves when it reaches a certain time.
         moveTimer = 0;
+
+        snakeSpeed = 0.3f;
+        speedCounter = 2;
 
         snakeIsDead = false;
 
@@ -95,8 +101,7 @@ public class Player {
         float tailYPos = getTail().getPosition().y;
 
         // Move the snake to this time.
-        // TODO : Become faster every time I eat a fruit.
-        if (moveTimer >= 0.3) {
+        if (moveTimer >= snakeSpeed) {
 
             Gdx.app.log("Y pos", headYPos+"");
 
@@ -196,6 +201,11 @@ public class Player {
     public void addToTail() {
         Gdx.app.log("Player", "Adding to tail");
         addToTail = true;
+        speedCounter--;
+        if (speedCounter <= 0) {
+            snakeSpeed -= 0.02f;
+            speedCounter = 2;
+        }
     }
 
     /**
