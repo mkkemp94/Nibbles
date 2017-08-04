@@ -48,7 +48,6 @@ public class PlayScreen implements Screen {
     private B2WorldCreator worldCreator;
 
     private Player player;
-    private boolean availableForInput;
     private Fruit fruit;
 
     private GameOverHud gameOverHud;
@@ -72,15 +71,18 @@ public class PlayScreen implements Screen {
         // Construct a world
         world = new World(new Vector2(0, 0), false);
         world.setContactListener(new WorldContactListener());
-
-        debugRenderer = new Box2DDebugRenderer();
         worldCreator = new B2WorldCreator(this);
 
+        // Debug rendered to show debug lines
+        debugRenderer = new Box2DDebugRenderer();
+
+        // Create player and first fruit
         player = new Player(this);
         fruit = new Fruit(this, 88 / PPM, 88 / PPM);
 
+        // Game over hud that displays when we hit a wall
+        // TODO: Maybe add objects that snake can crash into when he gets big enough?
         gameOverHud = new GameOverHud(game.batch);
-        availableForInput = true;
     }
 
     @Override
@@ -93,21 +95,25 @@ public class PlayScreen implements Screen {
         // Render tiled map with updated changes.
         tiledMapRenderer.render();
 
-        // Only render what the camera can see only.
+        // Only render what the camera can see.
         game.batch.setProjectionMatrix(gameCam.combined);
 
         // Render debug lines.
         debugRenderer.render(world, gameCam.combined);
 
+        // Draw objects on screen.
         game.batch.begin();
         player.draw(game.batch);
         fruit.draw(game.batch);
         game.batch.end();
 
-        // Set game over message if snake is dead.
+        // Show game over message if snake is dead.
         if (player.snakeIsDead()) {
             gameOverHud.stage.draw();
+
+            // Start new game if we touch the screen.
             if (Gdx.input.justTouched()) {
+                // TODO : Move to another method. Reset score etc.
                 game.setScreen(new PlayScreen((Nibbles) game, assetManager));
                 dispose();
             }
@@ -120,16 +126,18 @@ public class PlayScreen implements Screen {
     private void update(float dt) {
         handleInput();
 
-        // For world movement.
+        // Update world.
         world.step(1/60f, 6, 2);
 
-        // Update position of sprite.
+        // Update position of player.
         if (!player.snakeIsDead()) {
             player.update(dt);
         }
 
+        // Update fruit status.
         fruit.update();
 
+        // Update camera.
         gameCam.update();
         tiledMapRenderer.setView(gameCam);
     }
@@ -139,41 +147,36 @@ public class PlayScreen implements Screen {
      */
     private void handleInput() {
 
-
-        if (!player.snakeIsDead() && availableForInput) {
+        // TODO: I shouldn't be able to flip direction.
+        if (!player.snakeIsDead()) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
                 Gdx.app.log("Key Pressed", "Up");
                 player.setDirection(90);
-                setAvailableForInput(false);
 
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
                 Gdx.app.log("Key Pressed", "Down");
                 player.setDirection(270);
-                setAvailableForInput(false);
 
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
                 Gdx.app.log("Key Pressed", "Left");
                 player.setDirection(180);
-                setAvailableForInput(false);
 
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
                 Gdx.app.log("Key Pressed", "Right");
                 player.setDirection(0);
-                setAvailableForInput(false);
 
             }
         }
     }
 
+    /**
+     * Destroy
+     */
     public void addToTail() {
         Gdx.app.log("Screen", "Calling player addToTail()");
-        fruit.setToDestroy();
         player.addToTail();
     }
 
-    public void setAvailableForInput(boolean status) {
-        availableForInput = status;
-    }
 
     public TiledMap getMap() {
         return map;

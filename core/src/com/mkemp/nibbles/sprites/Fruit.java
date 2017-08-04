@@ -20,6 +20,7 @@ import static com.mkemp.nibbles.Nibbles.SNAKE_BIT;
 
 public class Fruit extends Sprite {
 
+    private PlayScreen screen;
     private World world;
     private Body body;
     private boolean setToDestroy;
@@ -27,6 +28,7 @@ public class Fruit extends Sprite {
 
     public Fruit(PlayScreen screen, float x, float y) {
         this.world = screen.getWorld();
+        this.screen = screen;
 
         // Create this body piece
         createFruit(x, y);
@@ -39,6 +41,27 @@ public class Fruit extends Sprite {
     }
 
     /**
+     * This gets called every time the screen's render() method updates.
+     */
+    public void update() {
+        // TODO : Instead of destroying fruit, I need to move it.
+        if (setToDestroy && !destroyed) {
+            world.destroyBody(body);
+            destroyed = true;
+        }
+    }
+
+    /**
+     * Move the fruit to a new position.
+     * Invoke the screen's addToTail() method.
+     */
+    public void eatFruit() {
+        // TODO: Move instead of destroy.
+        setToDestroy = true;
+        screen.addToTail();
+    }
+
+    /**
      * Create this fruit.
      */
     private void createFruit(float x, float y) {
@@ -46,6 +69,7 @@ public class Fruit extends Sprite {
         bodyDef.position.set(x, y);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bodyDef);
+        body.setUserData(this);
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape circleShape = new CircleShape();
@@ -54,23 +78,12 @@ public class Fruit extends Sprite {
         fixtureDef.filter.maskBits = SNAKE_BIT;
 
         fixtureDef.shape = circleShape;
-        body.createFixture(fixtureDef);
-    }
-
-
-    public void setToDestroy() {
-        setToDestroy = true;
-    }
-
-    public void update() {
-        if (setToDestroy && !destroyed) {
-            world.destroyBody(body);
-            destroyed = true;
-        }
+        body.createFixture(fixtureDef).setUserData(this);
     }
 
     @Override
     public void draw(Batch batch) {
+        // TODO: Move instead of destroy.
         if (!destroyed)
             super.draw(batch);
     }

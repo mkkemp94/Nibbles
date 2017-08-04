@@ -1,6 +1,5 @@
 package com.mkemp.nibbles.sprites;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -18,6 +17,7 @@ import static com.mkemp.nibbles.Nibbles.SNAKE_BIT;
 
 /**
  * Created by mkemp on 7/31/17.
+ * Creates a part of the snake at the specified position and rotation.
  */
 
 public class SnakePart {
@@ -27,43 +27,74 @@ public class SnakePart {
     private Sprite sprite;
     private Body body;
 
-    public SnakePart(PlayScreen screen, float x, float y, float roation) {
+    public SnakePart(PlayScreen screen, float x, float y, float rotation) {
         this.screen = screen;
         this.world = screen.getWorld();
 
         // Create this body piece
         createBody(x, y);
 
+        // Get the texture for this piece.
+        // TODO : Texture should be egg if part is in egg state -- always true, on create.
         Texture texture = screen.getAssetManager().get("yoshi.png", Texture.class);
+
         sprite = new Sprite(texture);
         sprite.setBounds(0, 0, 16 / PPM, 16 / PPM);
         sprite.setRegion(texture);
         sprite.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
-        sprite.setRotation(roation);
+        sprite.setRotation(rotation);
+
+        setNewSpritePosition();
     }
 
+    /**
+     * Get the position of this snake part.
+     * @return : a Vector2 representing the current body position
+     */
     public Vector2 getPosition() {
         return body.getPosition();
     }
 
+    /**
+     * Transform this snake part to a new x, y coordinate.
+     * @param x : x-coordinate
+     * @param y : y-coordinate
+     * @param angle : the angle it should be facing
+     */
     public void moveTo(float x, float y, float angle) {
         body.setTransform(x, y, angle);
+        setNewSpritePosition();
     }
 
-    public void setSpritePosition(float x, float y) {
-        sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 2);
+    public void setNewSpritePosition() {
+        sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2,
+                body.getPosition().y - sprite.getHeight() / 2);
     }
 
+    /**
+     * Set the rotation of this snake part's sprite.
+     * @param direction : degrees to rotate the sprite to
+     */
     public void setSpriteRotation(float direction) {
         sprite.setRotation(direction);
     }
 
+    /**
+     * Get the rotation this snake part's sprite is currently at.
+     * @return : a float representing the degrees of rotation
+     */
     public float getSpriteRotation() {
         return sprite.getRotation();
     }
 
+    // TODO : Flip sprite when moving left ONLY
+    public void flipSprite() {
+        sprite.flip(true, false);
+    }
+
     /**
      * Create the snake piece's body.
+     * Assign it a fixture so that it can do things.
      */
     private void createBody(float x, float y) {
         BodyDef bodyDef = new BodyDef();
@@ -82,12 +113,11 @@ public class SnakePart {
         body.createFixture(fixtureDef).setUserData(this);
     }
 
+    /**
+     * Draw the sprite for this snake part.
+     * @param batch : the sprite batch
+     */
     public void draw(Batch batch) {
         sprite.draw(batch);
-    }
-
-    public void addToTail() {
-        Gdx.app.log("SnakePart", "Calling screen addToTail()");
-        screen.addToTail();
     }
 }

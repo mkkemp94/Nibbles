@@ -28,6 +28,7 @@ public class B2WorldCreator {
         FixtureDef fixtureDef = new FixtureDef();
         Body body;
 
+        // Walls
         for (MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
             bodyDef.type = BodyDef.BodyType.StaticBody;

@@ -6,7 +6,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.mkemp.nibbles.sprites.SnakePart;
+import com.mkemp.nibbles.sprites.Fruit;
 
 import static com.mkemp.nibbles.Nibbles.FRUIT_BIT;
 import static com.mkemp.nibbles.Nibbles.SNAKE_BIT;
@@ -28,10 +28,10 @@ public class WorldContactListener implements ContactListener {
 
         switch (cdef) {
             case SNAKE_BIT | FRUIT_BIT:
-                if (fixA.getFilterData().categoryBits == SNAKE_BIT)
-                    ((SnakePart) fixA.getUserData()).addToTail();
+                if (fixA.getFilterData().categoryBits == FRUIT_BIT)
+                    ((Fruit) fixA.getUserData()).eatFruit();
                 else
-                    ((SnakePart) fixB.getUserData()).addToTail();
+                    ((Fruit) fixB.getUserData()).eatFruit();
         }
     }
 

@@ -15,6 +15,7 @@ import static com.mkemp.nibbles.Nibbles.PPM;
 
 public class Player {
 
+    // Directions for the snake to move in.
     public static final int RIGHT = 0;
     public static final int UP = 90;
     public static final int LEFT = 180;
@@ -25,8 +26,8 @@ public class Player {
     private float moveTimer;
     private int direction;
 
+    // The snake body.
     public ArrayList<SnakePart> snakeBody;
-    private int snakeLength;
 
     private boolean snakeIsDead;
     private boolean addToTail;
@@ -35,20 +36,24 @@ public class Player {
         this.world = screen.getWorld();
         this.screen = screen;
 
+        // This gets updated every render cycle.
+        // Snake moves when it reaches a certain time.
         moveTimer = 0;
+
         snakeIsDead = false;
 
+        // Position for snake to start at.
+        // TODO : Make this random.
         float x = 72 / PPM;
         float y = 40 / PPM;
-        direction = 0;
 
-        snakeLength = 3;
+        direction = 0;
 
         // Add each body piece to the list
         snakeBody = new ArrayList<SnakePart>();
 
-        for (int i = 0; i < snakeLength; i++)
-            snakeBody.add(new SnakePart(screen, x - (16 * i), y, 0));
+        // Start snake at a length of 1.
+        snakeBody.add(new SnakePart(screen, x, y, 0));
     }
 
     /**
@@ -56,85 +61,106 @@ public class Player {
      */
     public void update(float dt) {
 
-        // Update move timer
-        moveTimer += dt;
+        // Move snake.
+        moveSnake(dt);
 
-        // Move tail to new position. Become head.
-        moveSnake();
-
-        // Check for game over
+        // Check for game over.
+        // TODO : Use world contact listener for this.
         float headXPos = snakeBody.get(0).getPosition().x;
         float headYPos = snakeBody.get(0).getPosition().y;
         if (headXPos <= 0.1 || headXPos >= 2.3 || headYPos <= 0.1 || headYPos >= 2.3) {
             Gdx.app.log("Game", "Over");
             snakeIsDead = true;
         }
-
-        // Set sprite to each body part.
-        for (SnakePart part : snakeBody) {
-            part.setSpritePosition(part.getPosition().x, part.getPosition().y);
-        }
-
     }
 
     /**
      * Move tail to front of snake.
      */
-    private void moveSnake() {
+    private void moveSnake(float dt) {
 
-        // Get position of first body
-        SnakePart head = snakeBody.get(0);
+        // Update move timer.
+        moveTimer += dt;
 
-        // Get position of last body
-        int lastIndex = snakeBody.size() - 1;
-        SnakePart movingPiece = snakeBody.get(lastIndex);
-        float lastRotation = movingPiece.getSpriteRotation();
+        float lastRotation = getTail().getSpriteRotation();
 
-        // Current position of body
-        float headXPos = head.getPosition().x;
-        float headYPos = head.getPosition().y;
+        // Current position of head before moving.
+        float headXPos = getHead().getPosition().x;
+        float headYPos = getHead().getPosition().y;
 
-        float tailXPos = movingPiece.getPosition().x;
-        float tailYPos = movingPiece.getPosition().y;
+        // Current position of tail before moving.
+        // Add a new piece here is fruit is eaten.
+        float tailXPos = getTail().getPosition().x;
+        float tailYPos = getTail().getPosition().y;
 
-        // Step
-        if (moveTimer >= 0.8) {
+        // Move the snake to this time.
+        if (moveTimer >= 0.3) {
 
-            // Set position of body
+            // Move tail to front.
+            // TODO : Rotating left shouldn't be upside down.
             switch (direction) {
                 case RIGHT:
-                    movingPiece.moveTo(headXPos + 16 / PPM, headYPos, 0);
+                    getTail().moveTo(headXPos + 16 / PPM, headYPos, 0);
+                    getTail().setSpriteRotation(direction);
                     break;
                 case LEFT:
-                    movingPiece.moveTo(headXPos - 16 / PPM, headYPos, 0);
+                    getTail().moveTo(headXPos - 16 / PPM, headYPos, 0);
+                    getTail().setSpriteRotation(direction);
                     break;
                 case UP:
-                    movingPiece.moveTo(headXPos, headYPos + 16 / PPM, 0);
+                    getTail().moveTo(headXPos, headYPos + 16 / PPM, 0);
+                    getTail().setSpriteRotation(direction);
                     break;
                 case DOWN:
-                    movingPiece.moveTo(headXPos, headYPos - 16 / PPM, 0);
+                    getTail().moveTo(headXPos, headYPos - 16 / PPM, 0);
+                    getTail().setSpriteRotation(direction);
                     break;
                 default:
-                    movingPiece.moveTo(headXPos, headYPos - 16 / PPM, 0);
+                    getTail().moveTo(headXPos, headYPos - 16 / PPM, 0);
                     break;
             }
-            movingPiece.setSpriteRotation(direction);
-            snakeBody.remove(lastIndex);
-            snakeBody.add(0, movingPiece);
 
+            // Update snake list.
+            updateList();
+
+            // If it's time to add a new piece to the tail, do so.
             if (addToTail) {
                 snakeBody.add(new SnakePart(screen, tailXPos, tailYPos, lastRotation));
                 addToTail = false;
             }
 
+            // Reset move timer.
             moveTimer = 0;
-            screen.setAvailableForInput(true);
         }
     }
 
     /**
-     * Gets whether or not snake is dead.
-     * @return true or false
+     * Get current head piece.
+     */
+    private SnakePart getHead() {
+        return snakeBody.get(0);
+    }
+
+    /**
+     * Get current tail piece.
+     */
+    private SnakePart getTail() {
+        return snakeBody.get(snakeBody.size() - 1);
+    }
+
+    /**
+     * Update array list --
+     * Add a copy of the last element to front,
+     * and then remove the last element.
+     */
+    private void updateList() {
+        snakeBody.add(0, getTail());
+        snakeBody.remove(snakeBody.size() - 1);
+    }
+
+    /**
+     * Gets whether or not the snake is dead.
+     * @return : true or false
      */
     public boolean snakeIsDead() {
         return snakeIsDead;
@@ -142,7 +168,7 @@ public class Player {
 
     /**
      * Called by handleInput() in PlayScreen.
-     * This sets the direction for the body to move in update().
+     * This sets the direction for the snake to move in.
      * @param degrees
      */
     public void setDirection(int degrees) {
@@ -157,6 +183,10 @@ public class Player {
             snakeBody.draw(batch);
     }
 
+    /**
+     * Snake has just eaten a fruit.
+     * Add a new snake part to the tail.
+     */
     public void addToTail() {
         Gdx.app.log("Player", "Adding to tail");
         addToTail = true;
