@@ -20,6 +20,7 @@ import com.mkemp.nibbles.scenes.Hud;
 import com.mkemp.nibbles.sprites.Fruit;
 import com.mkemp.nibbles.sprites.Player;
 import com.mkemp.nibbles.tools.B2WorldCreator;
+import com.mkemp.nibbles.tools.Controller;
 import com.mkemp.nibbles.tools.WorldContactListener;
 
 import static com.mkemp.nibbles.Nibbles.PPM;
@@ -53,6 +54,8 @@ public class PlayScreen implements Screen {
 
     private GameOverHud gameOverHud;
     private Hud scoreHud;
+
+    private Controller controller;
 
     public PlayScreen(Nibbles game, AssetManager assetManager) {
         this.game = game;
@@ -88,6 +91,8 @@ public class PlayScreen implements Screen {
         // TODO: Maybe add objects that snake can crash into when he gets big enough?
         gameOverHud = new GameOverHud(game.batch);
 
+        controller = new Controller(game);
+
     }
 
     @Override
@@ -114,6 +119,9 @@ public class PlayScreen implements Screen {
 
         // Draw the hud.
         scoreHud.stage.draw();
+
+        // Draw controller!
+        controller.draw();
 
         // Show game over message if snake is dead.
         if (player.snakeIsDead()) {
@@ -162,6 +170,24 @@ public class PlayScreen implements Screen {
                 player.setDirection(180);
 
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                Gdx.app.log("Key Pressed", "Right");
+                player.setDirection(0);
+
+            }
+
+            if (controller.isUpPressed()) {
+                Gdx.app.log("Key Pressed", "Up");
+                player.setDirection(90);
+
+            } else if (controller.isDownPressed()) {
+                Gdx.app.log("Key Pressed", "Down");
+                player.setDirection(270);
+
+            } else if (controller.isLeftPressed()) {
+                Gdx.app.log("Key Pressed", "Left");
+                player.setDirection(180);
+
+            } else if (controller.isRightPressed()) {
                 Gdx.app.log("Key Pressed", "Right");
                 player.setDirection(0);
 
