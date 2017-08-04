@@ -28,7 +28,7 @@ public class Fruit extends Sprite {
 
     // TODO : Make stage larger than screen?
     private int stageWidth = 13;
-    private int stageHeight = 13;
+    private int stageHeight = 28;
 
     private int tileWidth = 16;
     private int tileHeight = 16;

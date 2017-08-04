@@ -25,6 +25,7 @@ public class Controller {
     boolean upPressed, downPressed, leftPressed, rightPressed;
     OrthographicCamera cam;
     Nibbles game;
+    private int controllerDimens = 40;
 
     public Controller(Nibbles game) {
         this.game = game;
@@ -37,7 +38,7 @@ public class Controller {
         table.center().bottom();
 
         Image upImage = new Image(new Texture("up.png"));
-        upImage.setSize(30, 30);
+        upImage.setSize(controllerDimens, controllerDimens);
         upImage.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -52,7 +53,7 @@ public class Controller {
         });
 
         Image downImage = new Image(new Texture("down.png"));
-        downImage.setSize(30, 30);
+        downImage.setSize(controllerDimens, controllerDimens);
         downImage.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -67,7 +68,7 @@ public class Controller {
         });
 
         Image leftImage = new Image(new Texture("left.png"));
-        leftImage.setSize(30, 30);
+        leftImage.setSize(controllerDimens, controllerDimens);
         leftImage.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -82,7 +83,7 @@ public class Controller {
         });
 
         Image rightImage = new Image(new Texture("right.png"));
-        rightImage.setSize(30, 30);
+        rightImage.setSize(controllerDimens, controllerDimens);
         rightImage.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

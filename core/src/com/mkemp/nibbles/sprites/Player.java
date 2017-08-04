@@ -35,6 +35,11 @@ public class Player {
     private float snakeSpeed;
     private int speedCounter;
 
+    private double xMinEdge = 0.1;
+    private double xMaxEdge = 2.3;
+    private double yMinEdge = 0.1;
+    private double yMaxEdge = 4.6;
+
     public Player(PlayScreen screen) {
         this.world = screen.getWorld();
         this.screen = screen;
@@ -75,7 +80,8 @@ public class Player {
         // TODO : Use world contact listener for this?
         float headXPos = snakeBody.get(0).getPosition().x;
         float headYPos = snakeBody.get(0).getPosition().y;
-        if (headXPos <= 0.1 || headXPos >= 2.3 || headYPos <= 0.1 || headYPos >= 2.3) {
+        if (headXPos <= xMinEdge || headXPos >= xMaxEdge ||
+                headYPos <= yMinEdge || headYPos >= yMaxEdge) {
             Gdx.app.log("Game", "Over");
             snakeIsDead = true;
         }

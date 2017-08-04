@@ -69,7 +69,7 @@ public class PlayScreen implements Screen {
 
         // Render tile map
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("snake_world.tmx");
+        map = mapLoader.load("snake_world_2.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map, 1 / PPM);
 
         // By default this centers around 0, 0... make it world center.

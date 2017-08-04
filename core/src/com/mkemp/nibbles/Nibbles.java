@@ -9,7 +9,7 @@ import com.mkemp.nibbles.screens.PlayScreen;
 public class Nibbles extends Game {
 
 	public static final int SCREEN_WIDTH = 240;
-	public static final int SCREEN_HEIGHT = 240;
+	public static final int SCREEN_HEIGHT = 480;
 	public static final float PPM = 100;
 
 	public static final int SNAKE_BIT = 1;
