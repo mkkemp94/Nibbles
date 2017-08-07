@@ -54,7 +54,6 @@ public class Player {
         snakeIsDead = false;
 
         // Position for snake to start at.
-        // TODO : Make this random?
         float x = 72 / PPM;
         float y = 40 / PPM;
 
